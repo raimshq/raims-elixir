@@ -1,0 +1,25 @@
+rules:
+  - id: raims.elixir.dynamic-code
+    languages: [elixir]
+    severity: ERROR
+    message: Do not evaluate runtime code or create atoms from untrusted input.
+    pattern-either:
+      - pattern: Code.eval_string(...)
+      - pattern: Code.eval_quoted(...)
+      - pattern: String.to_atom(...)
+      - pattern: List.to_atom(...)
+  - id: raims.elixir.tls-verification-disabled
+    languages: [generic]
+    severity: ERROR
+    message: Keep TLS peer verification enabled.
+    pattern-regex: 'verify\s*:\s*:verify_none|verify_mode\s*:\s*:none'
+  - id: raims.elixir.embedded-private-key
+    languages: [generic]
+    severity: ERROR
+    message: Load private keys from the application secret store.
+    pattern-regex: '-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----[\s]+[A-Za-z0-9+/=]{32}'
+  - id: raims.elixir.embedded-github-token
+    languages: [generic]
+    severity: ERROR
+    message: Keep access tokens outside source files.
+    pattern-regex: '\b(?:gh[pousr]_[A-Za-z0-9]{36}|github_pat_[A-Za-z0-9_]{82})\b'

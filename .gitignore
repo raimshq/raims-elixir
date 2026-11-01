@@ -1,0 +1,20 @@
+/_build/
+/deps/
+/doc/
+/cover/
+/tmp/
+/test/
+/tests/
+/.elixir_ls/
+*.beam
+*.ez
+*.tar
+erl_crash.dump
+__pycache__/
+*.pyc
+.env
+.env.*
+# Internal planning does not belong in a public SDK.
+**/[Tt][Oo][Dd][Oo]*
+**/[Bb][Aa][Cc][Kk][Ll][Oo][Gg]*
+**/[Rr][Oo][Aa][Dd][Mm][Aa][Pp]*

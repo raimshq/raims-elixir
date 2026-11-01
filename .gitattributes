@@ -1,0 +1,4 @@
+* text=auto eol=lf
+*.json text eol=lf
+*.ex text eol=lf
+*.exs text eol=lf
