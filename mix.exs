@@ -23,8 +23,12 @@ defmodule Raims.MixProject do
           "LICENSE",
           "CONTRIBUTING.md",
           "SECURITY.md",
-          "AGENTS.md",
-          "docs/*.md"
+          "docs/installation.md",
+          "docs/usage.md",
+          "docs/pagination.md",
+          "docs/errors-and-retries.md",
+          "docs/webhooks.md",
+          "docs/reference.md"
         ]
       ]
     ]
