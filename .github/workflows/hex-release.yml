@@ -1,0 +1,156 @@
+name: Publish Elixir SDK
+'on':
+  release:
+    types:
+    - published
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: raims-elixir-hex-release
+  cancel-in-progress: false
+env:
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTHONOPTIMIZE: '0'
+  RAIMS_ELIXIR_TOOLKIT_REF: '60c9e4733b4c77889c4edaa3f5d87b46393f7313'
+jobs:
+  validateRelease:
+    permissions:
+      contents: write
+      actions: read
+    if: github.repository == 'raimshq/raims-elixir' && github.event.action == 'published' && !github.event.release.draft
+      && !github.event.release.prerelease
+    runs-on:
+    - codebuild-raims-github-actions-${{ github.run_id }}-${{ github.run_attempt }}
+    - elixir-sdk-release-check
+    timeout-minutes: 25
+    outputs:
+      artifact_id: ${{ steps.upload.outputs.artifact-id }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+    - name: Checkout the release commit
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      with:
+        ref: ${{ github.sha }}
+        fetch-depth: 0
+        path: Raims-Elixir
+        persist-credentials: false
+    - name: Setup Python
+      uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+      with:
+        python-version: 3.12.14
+    - name: Verify release, prior validation, and approved distribution bytes
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      run: python Raims-Elixir/scripts/release.py prepare --source Raims-Elixir --artifact .tmp/raims-elixir-sdk/hex-upload
+    - name: Upload the approved Hex package and public provenance
+      id: upload
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+      with:
+        name: raims-hex-${{ github.run_id }}-${{ github.run_attempt }}
+        path: |
+          .tmp/raims-elixir-sdk/hex-upload/dist/*
+          .tmp/raims-elixir-sdk/hex-upload/release-manifest.json
+        if-no-files-found: error
+        retention-days: 14
+        compression-level: 0
+  publishHex:
+    needs: validateRelease
+    if: github.repository == 'raimshq/raims-elixir' && github.event.action == 'published' && !github.event.release.draft
+      && !github.event.release.prerelease
+    environment:
+      name: hex
+      url: https://hex.pm/packages/raims
+    runs-on:
+    - codebuild-raims-github-actions-${{ github.run_id }}-${{ github.run_attempt }}
+    - elixir-sdk-hex-publish
+    timeout-minutes: 25
+    permissions:
+      contents: read
+      actions: read
+      id-token: write
+    defaults:
+      run:
+        shell: bash
+    steps:
+    - name: Checkout the release commit
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      with:
+        ref: ${{ github.sha }}
+        fetch-depth: 0
+        path: Raims-Elixir
+        persist-credentials: false
+    - name: Setup Python
+      uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+      with:
+        python-version: 3.12.14
+    - name: Download the approved Hex package from this validation job
+      uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333
+      with:
+        artifact-ids: ${{ needs.validateRelease.outputs.artifact_id }}
+        path: .tmp/raims-elixir-sdk/hex-upload
+        merge-multiple: true
+        digest-mismatch: error
+    - name: Verify release and approved bytes before requesting publishing credentials
+      id: verify
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      run: python Raims-Elixir/scripts/release.py verify --source Raims-Elixir --artifact .tmp/raims-elixir-sdk/hex-upload
+    - name: Obtain an ephemeral Hex publisher credential
+      id: oidc
+      uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd
+      with:
+        script: |
+          const discovery = await fetch('https://hex.pm/api/oidc/audience', {
+            redirect:'error',signal:AbortSignal.timeout(30000),headers:{accept:'application/json'}
+          });
+          if (!discovery.ok) throw new Error('Hex audience discovery failed: HTTP ' + discovery.status);
+          const audience = (await discovery.json()).audience;
+          if (typeof audience !== 'string' || audience.length < 1 || audience.length > 256 || /[\r\n]/.test(audience)) {
+            throw new Error('Hex returned an invalid OIDC audience.');
+          }
+          const jwt = await core.getIDToken(audience);
+          core.setSecret(jwt);
+          const response = await fetch('https://hex.pm/api/oauth/token', {
+            method:'POST',redirect:'error',signal:AbortSignal.timeout(30000),
+            headers:{'content-type':'application/x-www-form-urlencoded',accept:'application/json'},
+            body:new URLSearchParams({grant_type:'urn:ietf:params:oauth:grant-type:jwt-bearer',assertion:jwt,scope:'package:hexpm/raims'})
+          });
+          if (!response.ok) throw new Error('Hex OIDC exchange failed: HTTP ' + response.status);
+          let value;
+          try { value=await response.json(); } catch { throw new Error('Hex OIDC response is invalid.'); }
+          if (typeof value.access_token === 'string') { core.setSecret(value.access_token); core.setSecret('Bearer '+value.access_token); }
+          if (typeof value.access_token !== 'string' || value.access_token.length < 16 || value.access_token.length > 8192 ||
+              /[\r\n]/.test(value.access_token) || value.token_type !== 'bearer' || value.scope !== 'package:hexpm/raims' ||
+              !Number.isInteger(value.expires_in) || value.expires_in <= 0 || value.expires_in > 900) {
+            throw new Error('Hex returned an invalid package credential scope or lifetime.');
+          }
+          core.setOutput('api-key',value.access_token);
+          core.info('Hex accepted the scoped GitHub workload identity.');
+    - name: Publish the exact approved Hex package
+      if: steps.verify.outputs.publishRequired == 'true'
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+        HEX_PUBLISH_TOKEN: ${{ steps.oidc.outputs.api-key }}
+      run: python Raims-Elixir/scripts/release.py publish --source Raims-Elixir --artifact .tmp/raims-elixir-sdk/hex-upload
+    - name: Confirm the public Hex artifact bytes
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      run: python Raims-Elixir/scripts/release.py confirm --source Raims-Elixir --artifact .tmp/raims-elixir-sdk/hex-upload
+    - name: Revoke the temporary Hex publisher credential
+      if: always() && steps.oidc.outputs.api-key != ''
+      uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd
+      env:
+        HEX_PUBLISH_TOKEN: ${{ steps.oidc.outputs.api-key }}
+      with:
+        script: |
+          const token=process.env.HEX_PUBLISH_TOKEN;
+          core.setSecret(token); core.setSecret('Bearer '+token);
+          const response=await fetch('https://hex.pm/api/oauth/revoke', {
+            method:'POST',redirect:'error',signal:AbortSignal.timeout(30000),
+            headers:{'content-type':'application/x-www-form-urlencoded'},body:new URLSearchParams({token})
+          });
+          if (response.status !== 200) throw new Error('Hex token revocation failed: HTTP '+response.status);
+          core.info('The temporary Hex publisher credential was revoked.');

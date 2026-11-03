@@ -1,0 +1,199 @@
+name: Validate Elixir SDK
+'on':
+  push:
+    branches:
+    - '**'
+  workflow_dispatch: null
+permissions:
+  contents: read
+concurrency:
+  group: raims-elixir-validation-${{ github.ref }}
+  cancel-in-progress: true
+env:
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTHONOPTIMIZE: '0'
+  RAIMS_ELIXIR_TOOLKIT_REF: '60c9e4733b4c77889c4edaa3f5d87b46393f7313'
+jobs:
+  validateElixir:
+    name: validateElixir
+    if: github.repository == 'raimshq/raims-elixir'
+    runs-on:
+    - codebuild-raims-github-actions-${{ github.run_id }}-${{ github.run_attempt }}
+    - elixir-sdk-check
+    timeout-minutes: 45
+    defaults:
+      run:
+        shell: bash
+    steps:
+    - name: Checkout the candidate commit
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      with:
+        ref: ${{ github.sha }}
+        fetch-depth: 0
+        path: Raims-Elixir
+        persist-credentials: false
+    - name: Setup Python
+      uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+      with:
+        python-version: 3.12.14
+    - name: Reject tracked files excluded by repository policy
+      run: |
+        import os
+        from pathlib import Path
+        import subprocess
+        import sys
+        checkout = Path(os.environ['GITHUB_WORKSPACE']) / 'Raims-Elixir'
+        ignored = subprocess.check_output([
+            'git', '-C', str(checkout), 'ls-files', '--cached', '--ignored',
+            '--exclude-from=.gitignore', '-z',
+        ])
+        count = sum(bool(path) for path in ignored.split(b'\0'))
+        if count:
+            print(f'Repository policy rejects {count} tracked ignored file(s).', file=sys.stderr)
+            raise SystemExit(1)
+      shell: python
+    - name: Create a read-only validation source token
+      id: sources
+      uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1
+      with:
+        client-id: ${{ vars.RAIMS_CI_SOURCE_READER_CLIENT_ID }}
+        private-key: ${{ secrets.RAIMS_CI_SOURCE_READER_PRIVATE_KEY }}
+        owner: raimshq
+        repositories: Raims-Developer-Toolkit
+        permission-contents: read
+    - name: Checkout the reviewed validation tooling
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      with:
+        repository: raimshq/Raims-Developer-Toolkit
+        ref: ${{ env.RAIMS_ELIXIR_TOOLKIT_REF }}
+        path: Developer-Toolkit
+        token: ${{ steps.sources.outputs.token }}
+        persist-credentials: false
+    - name: Install the reviewed native Elixir and OTP matrix
+      run: python Developer-Toolkit/scripts/release-preflight/elixir_tools.py --workspace "$GITHUB_WORKSPACE" --output
+        "$GITHUB_WORKSPACE/.tmp/raims-elixir-sdk/native-tools"
+    - name: Run the canonical Elixir SDK checks
+      run: |
+        set -euo pipefail
+        cp Developer-Toolkit/internal/public-repositories/workspace/AGENTS.md AGENTS.md
+        output="$GITHUB_WORKSPACE/.tmp/raims-elixir-sdk/validate-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT"
+        python Developer-Toolkit/scripts/release-preflight/elixir_sdk.py   --source "$GITHUB_WORKSPACE/Raims-Elixir"   --workspace "$GITHUB_WORKSPACE" --output "$output"   --elixir "1.18=$RAIMS_ELIXIR_118" --erl "1.18=$RAIMS_ERL_118"   --elixir "1.19=$RAIMS_ELIXIR_119" --erl "1.19=$RAIMS_ERL_119"
+        python - "$output" <<'PY'
+        import hashlib
+        import json
+        import os
+        from pathlib import Path
+        import subprocess
+        import sys
+        output = Path(sys.argv[1])
+        report = json.loads((output / 'report.json').read_text(encoding='utf-8'))
+        versions = {'1.18': {'elixir':'1.18.4','otp':'27.3.4.19'}, '1.19': {'elixir':'1.19.5','otp':'28.5.0.8'}}
+        if (report.get('status') != 'passed' or report.get('sourceUnchanged') is not True
+                or report.get('physicalTestsOnlyInTmp') is not True or report.get('liveApiCalled') is not False
+                or report.get('hexVersion') != '2.6.0' or set(report['runtimes']) != set(versions)):
+            raise SystemExit('The canonical Elixir SDK report is invalid.')
+        for series, version in versions.items():
+            runtime = report['runtimes'][series]
+            if (runtime.get('executionMode') != 'native' or 'Elixir '+version['elixir']+' ' not in runtime['version']+' '
+                    or runtime.get('runtimeIdentity',{}).get('version') != version['otp']
+                    or runtime.get('exunit',{}).get('failures') != 0
+                    or runtime.get('consumer',{}).get('execution') != runtime.get('execution')):
+                raise SystemExit('The required native Elixir/OTP source and packaged suite did not pass.')
+        package = report['runtimes']['1.19']['package']
+        raw = Path(package['path']).read_bytes()
+        if hashlib.sha256(raw).hexdigest() != package['sha256']:
+            raise SystemExit('The approved Hex package bytes changed.')
+        source = Path(os.environ['GITHUB_WORKSPACE']) / 'Raims-Elixir'
+        project = (source / 'mix.exs').read_text(encoding='utf-8')
+        import re
+        matches = re.findall(r'^\s+version: "([^"]+)"',project,flags=re.M)
+        if len(matches) != 1:
+            raise SystemExit('The package version is ambiguous.')
+        head = subprocess.check_output(['git','-C',str(source),'rev-parse','HEAD'],text=True).strip()
+        if head != os.environ['GITHUB_SHA']:
+            raise SystemExit('The canonical Elixir source identity differs.')
+        dist = output / 'dist'
+        dist.mkdir()
+        (dist / 'raims.tar').write_bytes(raw)
+        manifest = {'package':{'name':'raims','version':matches[0]},'sourceRevision':head,
+                    'toolkitRevision':os.environ['RAIMS_ELIXIR_TOOLKIT_REF'],'runtimeVersions':versions,
+                    'hexVersion':'2.6.0','files':{'raims.tar':package['sha256']}}
+        (output / 'release-manifest.json').write_text(json.dumps(manifest,indent=2)+'\n',encoding='utf-8')
+        PY
+    - name: Upload canonical Elixir distribution evidence
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+      with:
+        name: raims-elixir-validation-${{ github.run_id }}-${{ github.run_attempt }}
+        path: |
+          .tmp/raims-elixir-sdk/validate-${{ github.run_id }}-${{ github.run_attempt }}/dist/*
+          .tmp/raims-elixir-sdk/validate-${{ github.run_id }}-${{ github.run_attempt }}/release-manifest.json
+        if-no-files-found: error
+        retention-days: 14
+        compression-level: 0
+  securityLinux:
+    name: securityLinux
+    if: github.repository == 'raimshq/raims-elixir'
+    runs-on:
+    - codebuild-raims-github-actions-${{ github.run_id }}-${{ github.run_attempt }}
+    - elixir-sdk-security
+    timeout-minutes: 20
+    defaults:
+      run:
+        shell: bash
+    steps:
+    - name: Checkout the candidate commit
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      with:
+        ref: ${{ github.sha }}
+        fetch-depth: 0
+        path: Raims-Elixir
+        persist-credentials: false
+    - name: Setup Python
+      uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+      with:
+        python-version: 3.12.14
+    - name: Reject tracked files excluded by repository policy
+      run: |
+        import os
+        from pathlib import Path
+        import subprocess
+        import sys
+        checkout = Path(os.environ['GITHUB_WORKSPACE']) / 'Raims-Elixir'
+        ignored = subprocess.check_output([
+            'git', '-C', str(checkout), 'ls-files', '--cached', '--ignored',
+            '--exclude-from=.gitignore', '-z',
+        ])
+        count = sum(bool(path) for path in ignored.split(b'\0'))
+        if count:
+            print(f'Repository policy rejects {count} tracked ignored file(s).', file=sys.stderr)
+            raise SystemExit(1)
+      shell: python
+    - name: Create a read-only validation source token
+      id: sources
+      uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1
+      with:
+        client-id: ${{ vars.RAIMS_CI_SOURCE_READER_CLIENT_ID }}
+        private-key: ${{ secrets.RAIMS_CI_SOURCE_READER_PRIVATE_KEY }}
+        owner: raimshq
+        repositories: Raims-Developer-Toolkit
+        permission-contents: read
+    - name: Checkout the reviewed validation tooling
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      with:
+        repository: raimshq/Raims-Developer-Toolkit
+        ref: ${{ env.RAIMS_ELIXIR_TOOLKIT_REF }}
+        path: Developer-Toolkit
+        token: ${{ steps.sources.outputs.token }}
+        persist-credentials: false
+    - name: Run the canonical SDK security checks
+      run: |
+        set -euo pipefail
+        cp Developer-Toolkit/internal/public-repositories/workspace/AGENTS.md AGENTS.md
+        output="$GITHUB_WORKSPACE/.tmp/raims-elixir-sdk/security-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT"
+        python Developer-Toolkit/scripts/release-preflight/sdk_security.py \
+          --source "$GITHUB_WORKSPACE/Raims-Elixir" \
+          --workspace "$GITHUB_WORKSPACE" \
+          --repository Raims-Elixir \
+          --output "$output" \
+          --prepare-tools
+        python -c 'import json,os,sys; r=json.load(open(sys.argv[1],encoding="utf-8")); sys.exit(0 if r.get("status")=="pass" and r.get("repository")=="Raims-Elixir" and r.get("toolkitRevision")==os.environ["RAIMS_ELIXIR_TOOLKIT_REF"] else "Canonical SDK security summary is invalid.")' "$output/summary.json"

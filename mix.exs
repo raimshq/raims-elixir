@@ -4,17 +4,20 @@ defmodule Raims.MixProject do
   def project do
     [
       app: :raims,
-      version: "0.1.0",
+      version: "0.1.1",
       elixir: "~> 1.18",
       start_permanent: Mix.env() == :prod,
       deps: [{:mint, "~> 1.11.0"}],
       description: "Official Elixir SDK for the Raims public API.",
       source_url: "https://github.com/raimshq/raims-elixir",
-      homepage_url: "https://docs.raims.com/en/api",
+      homepage_url: "https://docs.raims.com/en/integracoes/sdk-elixir",
       package: [
         name: "raims",
         licenses: ["MIT"],
-        links: %{"Documentation" => "https://docs.raims.com/en/api"},
+        links: %{
+          "Documentation" => "https://docs.raims.com/en/integracoes/sdk-elixir",
+          "GitHub" => "https://github.com/raimshq/raims-elixir"
+        },
         files: [
           "lib",
           "priv/contract.json",

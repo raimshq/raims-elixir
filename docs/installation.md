@@ -1,10 +1,32 @@
 # Installation and updates
 
-Requires Elixir 1.18 or later with Erlang/OTP 27 or later. Source code and
-releases are distributed through
-[GitHub](https://github.com/raimshq/raims-elixir/releases). The package is not
-published on Hex. Consumers need the declared Elixir dependencies; Python
-and the engineering Toolkit are not runtime requirements.
+Requires Elixir 1.18 or later with Erlang/OTP 27 or later. Use the Hex package
+[`raims`](https://hex.pm/packages/raims) in server applications. Source code
+and release archives are also distributed through
+[GitHub](https://github.com/raimshq/raims-elixir/releases/latest).
+
+## Install with Hex
+
+Ask Hex for the current package information:
+
+If Hex is not installed, run `mix local.hex` first.
+
+```sh
+mix hex.info raims
+```
+
+Copy the dependency tuple shown on the `Config:` line into `deps/0` in your
+application's `mix.exs`. Then fetch and compile your dependencies:
+
+```sh
+mix deps.get
+mix compile
+```
+
+Hex provides the current dependency requirement. Mix selects a compatible
+release and records its exact version and checksums in the application's
+`mix.lock`. Keep that lockfile under version control so later builds retain
+the resolved versions until you update them.
 
 ## Install from GitHub
 
@@ -47,8 +69,7 @@ uses the files in that directory and does not download future releases.
 The release also includes `raims.tar` and `SHA256SUMS`. Verify the archive
 against its checksum before using it. `raims.tar` uses the Hex package
 format: unpack the outer archive, then extract its `contents.tar.gz` into
-the SDK directory. Use that directory as the path dependency above. The
-archive format does not imply publication to the Hex registry.
+the SDK directory. Use that directory as the path dependency above.
 
 ## Keep credentials on the server
 
@@ -63,6 +84,36 @@ logs. The same API hostname serves Sandbox and Production; your key selects
 the company and environment.
 
 ## Update an existing installation
+
+For a Hex dependency, update within its configured requirement and compile:
+
+```sh
+mix deps.update raims
+mix compile
+```
+
+Check `mix hex.info raims` when you want to adopt a newer release outside
+that requirement. Update the dependency in `mix.exs` if needed, then run
+the commands above. Review the changes to `mix.lock` and run your
+application's checks before deploying. Installing a package does not apply
+future updates automatically.
+
+### Migrate from Git or a local directory to Hex
+
+Run `mix hex.info raims` and replace the existing `:raims` dependency with
+the current `Config:` entry. Remove its `github:`, `git:`, `path:`, `ref:`,
+`branch:`, or `tag:` options so Mix uses Hex. Then run:
+
+```sh
+mix deps.update raims
+mix compile
+```
+
+Keep the application's lockfile and review its changes. Do not delete the
+whole lockfile to change one dependency. Run the integration checks used by
+your application before deploying the new build.
+
+### Git and local path dependencies
 
 For a GitHub dependency, update the locked revision and compile:
 

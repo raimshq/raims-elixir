@@ -11,10 +11,10 @@ def main():
     if sys.flags.optimize:
         raise RuntimeError('Validation requires Python without -O or -OO.')
     source = Path(__file__).resolve().parent.parent
-    workspace = source.parent
+    workspace = next((candidate for candidate in (source.parent, source.parent.parent) if (candidate / 'Developer-Toolkit/scripts/release-preflight/elixir_sdk.py').is_file()), source.parent)
     validator = workspace / 'Developer-Toolkit/scripts/release-preflight/elixir_sdk.py'
     if not validator.is_file() or not (workspace / 'AGENTS.md').is_file():
-        raise RuntimeError('Use the Raims engineering workspace and sibling Developer Toolkit. See CONTRIBUTING.md.')
+        raise RuntimeError('Use the Raims engineering workspace with Developer Toolkit. See CONTRIBUTING.md.')
     original = sys.argv
     try:
         sys.argv = [str(validator), '--source', str(source), '--workspace', str(workspace)] + original[1:]

@@ -6,29 +6,35 @@ Use resource modules, response models, cursor pagination, structured errors,
 and webhook signature verification in server applications. Requires Elixir
 1.18 or later with Erlang/OTP 27 or later.
 
-## Install from GitHub
+## Install with Hex
 
-Source code and release notes are available on
-[GitHub](https://github.com/raimshq/raims-elixir/releases). The package is not
-published on Hex. With Git installed, add the SDK to your application's
-dependencies:
+Check the current dependency configuration for
+[`raims` on Hex](https://hex.pm/packages/raims):
 
-```elixir
-defp deps do
-  [{:raims, github: "raimshq/raims-elixir"}]
-end
+If Hex is not installed, run `mix local.hex` first.
+
+```sh
+mix hex.info raims
 ```
 
-Run `mix deps.get` and `mix compile`. Mix resolves the repository's default
-`main` branch and records the selected revision in your application's
-`mix.lock`. To update, run `mix deps.update raims`, compile, and run your
-application's checks. Updates are not applied automatically.
+Copy the dependency shown on the `Config:` line into `deps/0` in your
+application's `mix.exs`, then fetch and compile it:
 
-You can also download the source archive from the
-[current release](https://github.com/raimshq/raims-elixir/releases/latest),
-extract it, and use a local path dependency. See
-[installation and updates](docs/installation.md) for this option and the
-`raims.tar` release artifact.
+```sh
+mix deps.get
+mix compile
+```
+
+Keep the application's `mix.lock` under version control. To update within
+your dependency requirement, run `mix deps.update raims`, compile, and run
+your application's checks. Review the current Hex configuration when you
+want to adopt a release outside that requirement. Installing the SDK does
+not apply future updates automatically.
+
+Source code and release archives remain available on
+[GitHub](https://github.com/raimshq/raims-elixir/releases/latest). See
+[installation and updates](docs/installation.md) for Git and local path
+dependencies, migration to Hex, and the `raims.tar` release artifact.
 
 ## First request
 
@@ -119,6 +125,7 @@ See the [method reference](docs/reference.md).
 
 ## Documentation
 
+- [SDK guide](https://docs.raims.com/en/integracoes/sdk-elixir)
 - [Installation and updates](docs/installation.md)
 - [Configuration, responses, and documents](docs/usage.md)
 - [Pagination](docs/pagination.md)
