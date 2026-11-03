@@ -246,6 +246,7 @@ def indexed(version, raw):
     require(metadata.get('version') == version and metadata.get('checksum') == digest(raw)
             and metadata.get('meta') == {'app': 'raims', 'elixir': '~> 1.18', 'build_tools': ['mix']}
             and metadata.get('retirement') is None
+            and isinstance(metadata.get('publisher'), dict) and metadata['publisher'].get('username') == 'raims'
             and metadata.get('requirements') == {'mint': {'app': 'mint', 'optional': False, 'requirement': '~> 1.11.0'}},
             'An existing Hex version differs from the approved identity, requirements or bytes.')
     package = json.loads(read_response(urllib.request.Request('https://hex.pm/api/packages/raims',
@@ -295,15 +296,47 @@ def prior_stage(authorization, value, raw):
     return staged_response(response, value, raw)
 
 
+def permanent_api_key():
+    token = os.environ.get('HEX_API_KEY', '')
+    require(16 <= len(token) <= 8192 and token == token.strip() and '\r' not in token and '\n' not in token,
+            'The configured permanent Hex API key is missing or invalid.')
+    return token
+
+
+def verify_credential():
+    token = permanent_api_key()
+    headers = {'Authorization': token, 'Accept': 'application/json', 'User-Agent': 'Raims-Elixir-Release'}
+    def read(endpoint):
+        try:
+            return json.loads(read_response(urllib.request.Request('https://hex.pm/api/' + endpoint, headers=headers)))
+        except (OSError, ValueError, RuntimeError):
+            raise RuntimeError('The Hex publishing credential could not be verified.') from None
+    permission = read('auth?domain=publish&resource=hexpm%2Fraims')
+    require(isinstance(permission, dict), 'The Hex publishing credential response is invalid.')
+    key = permission.get('key', {})
+    require(isinstance(key, dict) and key.get('name') == 'raims-elixir-publisher'
+            and key.get('owner') == {'type': 'user', 'name': 'raims'},
+            'The Hex publishing credential does not belong to the expected account and key.')
+    metadata = read('keys/raims-elixir-publisher')
+    require(isinstance(metadata, dict), 'The Hex key metadata response is invalid.')
+    permissions = metadata.get('permissions')
+    require(isinstance(permissions, list) and len(permissions) == 2
+            and all(isinstance(item, dict) and set(item) == {'domain', 'resource'}
+                    and isinstance(item['domain'], str) and (item['resource'] is None or isinstance(item['resource'], str))
+                    for item in permissions)
+            and {(item['domain'], item['resource']) for item in permissions} == {('api', 'read'), ('publish', None)}
+            and metadata.get('name') == 'raims-elixir-publisher'
+            and 'revoke_at' in metadata and metadata['revoke_at'] is None,
+            'The Hex publishing credential permissions or permanent lifetime differ from the reviewed configuration.')
+    print('Hex confirmed the permanent publishing credential for the Raims package.', flush=True)
+
+
 def publish(artifact, value, files):
     raw = files['raims.tar']
     if indexed(value['version'], raw):
         print('The exact approved Hex package is already published; no upload is required.', flush=True)
         return
-    token = os.environ.get('HEX_PUBLISH_TOKEN', '')
-    require(bool(token) and '\r' not in token and '\n' not in token,
-            'A short-lived scoped Hex publishing credential is required.')
-    authorization = 'Bearer ' + token
+    authorization = permanent_api_key()
     staged = prior_stage(authorization, value, raw)
     if staged is None:
         request = urllib.request.Request('https://hex.pm/api/packages/raims/releases?replace=false',
@@ -315,7 +348,7 @@ def publish(artifact, value, files):
         except (OSError, RuntimeError, ValueError):
             # Never repeat an uncertain write. Read public/staged state first.
             if indexed(value['version'], raw):
-                confirm(value['version'], files, value=value, require_oidc=True)
+                confirm(value['version'], files)
                 return
             staged = prior_stage(authorization, value, raw)
             require(staged is not None,
@@ -332,22 +365,14 @@ def publish(artifact, value, files):
         print('Hex requires owner approval of the exact tarball. The upload is staged, not public.', flush=True)
         print('Expected package checksum: ' + digest(raw), flush=True)
         print('Approval: ' + staged['html_url'], flush=True)
-    confirm(value['version'], files, value=value, require_oidc=True)
+    confirm(value['version'], files)
 
 
-def confirm(version, files, wait_seconds=600, value=None, require_oidc=False):
+def confirm(version, files, wait_seconds=600):
     deadline = time.monotonic() + wait_seconds
     while True:
         metadata = indexed(version, files['raims.tar'])
         if metadata:
-            if require_oidc:
-                claims = metadata.get('oidc_claims')
-                require(isinstance(claims, dict) and claims.get('repository') == REPOSITORY
-                        and claims.get('sha') == value['sourceRevision']
-                        and claims.get('workflow_ref') == REPOSITORY + '/.github/workflows/hex-release.yml@refs/tags/v' + version
-                        and str(claims.get('run_id')) == os.environ.get('GITHUB_RUN_ID')
-                        and str(claims.get('run_attempt')) == os.environ.get('GITHUB_RUN_ATTEMPT'),
-                        'The public Hex provenance does not match this OIDC publication.')
             print('Hex serves the exact approved package bytes.', flush=True)
             return
         require(time.monotonic() < deadline,
@@ -357,7 +382,7 @@ def confirm(version, files, wait_seconds=600, value=None, require_oidc=False):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('command', choices=('prepare', 'verify', 'publish', 'confirm'))
+    parser.add_argument('command', choices=('prepare', 'verify', 'credential', 'publish', 'confirm'))
     parser.add_argument('--source', type=Path, required=True)
     parser.add_argument('--artifact', type=Path, required=True)
     args = parser.parse_args()
@@ -380,6 +405,8 @@ def main():
         if os.environ.get('GITHUB_OUTPUT'):
             with Path(os.environ['GITHUB_OUTPUT']).open('a', encoding='utf-8') as output:
                 output.write('publishRequired=' + ('true' if required else 'false') + '\n')
+    elif args.command == 'credential':
+        verify_credential()
     elif args.command == 'publish':
         publish(artifact, value, files)
     elif args.command == 'confirm':
