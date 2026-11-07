@@ -1,5 +1,5 @@
 defmodule Raims.Error do
-  @moduledoc "An SDK failure with structured details and a safe default message."
+  @moduledoc "An SDK failure with API details and a safe exception message."
   @derive {Inspect, only: [:kind, :status_code]}
   defexception kind: :api_error,
                message: "The Raims request failed.",
@@ -7,8 +7,8 @@ defmodule Raims.Error do
                request_id: nil,
                retry_after: nil,
                code: nil,
-               param: nil,
-               errors: nil,
+               api_message: nil,
+               details: nil,
                api_error: nil,
                response: nil
 

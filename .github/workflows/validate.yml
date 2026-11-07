@@ -12,7 +12,7 @@ concurrency:
 env:
   PYTHONDONTWRITEBYTECODE: '1'
   PYTHONOPTIMIZE: '0'
-  RAIMS_ELIXIR_TOOLKIT_REF: '2c19929ce2aed190f352f523f0d9062e42afe283'
+  RAIMS_ELIXIR_TOOLKIT_REF: 'ad7ef9f75e3b21104fd13fa5762501c851dcccd9'
 jobs:
   validateElixir:
     name: validateElixir

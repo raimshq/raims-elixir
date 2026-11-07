@@ -222,7 +222,7 @@ defmodule Raims.Client do
     response = %Raims.Response{
       status_code: raw.status,
       headers: raw.headers,
-      request_id: header(raw.headers, "request-id") || header(raw.headers, "x-request-id"),
+      request_id: header(raw.headers, "request-id"),
       retry_after: header(raw.headers, "retry-after"),
       idempotency_replayed?: header(raw.headers, "idempotency-replayed") == "true",
       page_context: context
@@ -268,14 +268,20 @@ defmodule Raims.Client do
         request_id: response.request_id,
         retry_after: response.retry_after,
         code: api_error && api_error["code"],
-        param: api_error && api_error["param"],
-        errors: api_error && (api_error["errors"] || api_error["details"]),
+        api_message: api_message(api_error),
+        details: api_details(api_error),
         api_error: api_error,
         response: response
       )
 
     {:error, error}
   end
+
+  defp api_message(%{"message" => message}) when is_binary(message), do: message
+  defp api_message(_), do: nil
+
+  defp api_details(%{"details" => details}) when is_list(details), do: details
+  defp api_details(_), do: nil
 
   defp unexpected(response),
     do:

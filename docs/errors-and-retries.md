@@ -26,9 +26,15 @@ end
 | `:unexpected_response` | The reply did not match the declared response shape |
 | `:api_error` | Another API failure |
 
-Default exception messages and inspection omit credentials, resource IDs,
-query strings, and payloads. Error fields accessed explicitly may contain
-information from the API; keep them out of unrestricted logs.
+For API failures, `error.code`, `error.api_message`, and `error.details` expose
+the API error's `code`, `message`, and `details` fields. Use `code` to choose
+the next action; `details` identifies input fields that need correction and is `nil`
+when the API omits it.
+
+`error.message` and `Exception.message(error)` return a generic message based
+on the error kind. They and default inspection omit credentials, resource IDs,
+query strings, and payloads. Fields accessed explicitly, including `api_message` and `details`, may
+contain information from the API; keep them out of unrestricted logs.
 
 Resource functions require the client returned by `Raims.Client.new/2`.
 Passing a key directly in place of that client raises a sanitized
@@ -37,6 +43,14 @@ Passing a key directly in place of that client raises a sanitized
 Parameter arrays must be proper Elixir lists of JSON values. An invalid list
 tail raises the same sanitized `ArgumentError` before HTTP, including when
 the list is nested inside another parameter.
+
+
+## Migrating error handling from 0.1
+
+Version 0.2 removes the `param` and `errors` fields from `Raims.Error`. Use
+`code` to choose how to handle an API failure, `api_message` for the API
+message, and `details` for field validation failures. The exception message
+remains generic so ordinary exception logging does not include the payload.
 
 ## Recovering writes
 
