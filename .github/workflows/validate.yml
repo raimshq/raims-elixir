@@ -12,7 +12,7 @@ concurrency:
 env:
   PYTHONDONTWRITEBYTECODE: '1'
   PYTHONOPTIMIZE: '0'
-  RAIMS_ELIXIR_TOOLKIT_REF: 'ad7ef9f75e3b21104fd13fa5762501c851dcccd9'
+  RAIMS_ELIXIR_TOOLKIT_REF: '4dc550a0e55c52dd2c8c8f7662289890ae526a8d'
 jobs:
   validateElixir:
     name: validateElixir
@@ -77,7 +77,7 @@ jobs:
         set -euo pipefail
         cp Developer-Toolkit/internal/public-repositories/workspace/AGENTS.md AGENTS.md
         output="$GITHUB_WORKSPACE/.tmp/raims-elixir-sdk/validate-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT"
-        python Developer-Toolkit/scripts/release-preflight/elixir_sdk.py   --source "$GITHUB_WORKSPACE/Raims-Elixir"   --workspace "$GITHUB_WORKSPACE" --output "$output"   --elixir "1.18=$RAIMS_ELIXIR_118" --erl "1.18=$RAIMS_ERL_118"   --elixir "1.19=$RAIMS_ELIXIR_119" --erl "1.19=$RAIMS_ERL_119"
+        python Developer-Toolkit/scripts/release-preflight/elixir_sdk.py   --source "$GITHUB_WORKSPACE/Raims-Elixir"   --workspace "$GITHUB_WORKSPACE" --output "$output"   --elixir "1.18=$RAIMS_ELIXIR_118" --erl "1.18=$RAIMS_ERL_118"   --elixir "1.19=$RAIMS_ELIXIR_119" --erl "1.19=$RAIMS_ERL_119" --prepare-tools
         python - "$output" <<'PY'
         import hashlib
         import json
