@@ -113,9 +113,9 @@ List charges.
 | `before` | `String.t()` | No | Copy page.previous_before from the previous response to move backward. Keep the same filters and sort order; do not send after as well. Leave it empty if you do not want to go backward. |
 | `identifier` | `String.t()` | No | Filter by the complete charge ID. If there is no match, list is empty. |
 | `customer_id` | `String.t()` | No | Filter by the customer's complete public ID returned when creating or retrieving the customer. The relationship remains unchanged if the name or email changes. It can be combined with other filters; keep the same customer_id when changing pages. A valid ID with no charges in the authenticated company and environment returns an empty list. An empty or omitted value does not apply the filter. |
-| `external_reference` | `String.t()` | No | Filter by the charge's current reference in your system, matching the complete value, including case and accents. An empty or omitted value does not apply the filter. It can be combined with other filters; preserve the value when navigating by cursor. After creating or editing a charge, it may take a few seconds for search to reflect the reference. |
+| `external_reference` | `String.t()` | No | Filters by the charge's current reference in your system. It matches the complete value, including letter case and accents. New or updated charges can be temporarily missing from the results. An empty or omitted value skips the filter. Keep the value when navigating by cursor. |
 | `email` | `String.t()` | No | Filter by the complete email address recorded on the charge. Editing the customer record does not change that email address. |
-| `status` | `String.t()` | No | Filter by one or more comma-separated codes, such as 0,1. 0 created, 1 awaiting payment, 2 authorized, 3 processing, 4 paid, 5 partially refunded, 6 refunded, 7 cancelled, 8 expired, 9 failed, 10 chargeback, 11 chargeback under review, 12 chargeback lost, and 13 chargeback won. Changes may take a few seconds to appear. |
+| `status` | `String.t()` | No | Filters by one or more comma-separated codes, such as 0,1. 0 created, 1 awaiting payment, 2 authorized, 3 processing, 4 paid, 5 partially refunded, 6 refunded, 7 canceled, 8 expired, 9 failed, 10 chargeback, 11 chargeback under review, 12 chargeback lost, and 13 chargeback won. Search may take time to reflect the current status. |
 | `payment_method` | `String.t()` | No | Filter by the charge's payment method: 1 for Pix and 2 for boleto. To combine them, send 1,2. A charge with an undefined method may switch to Pix or boleto when the Pix code or boleto is generated in checkout. Selecting a method on the page alone does not change the filter. |
 | `created_gte` | `integer()` | No | Filter charges created at or after this instant, inclusive, in Unix seconds UTC. If created_lte is supplied, this value must be less than or equal to it. |
 | `created_lte` | `integer()` | No | Filter charges created at or before this instant, inclusive, in Unix seconds UTC. |
@@ -132,7 +132,7 @@ Create a new charge.
 
 | Field | Elixir value | Required | Description |
 | --- | --- | --- | --- |
-| `customer_id` | `String.t()` | Yes | ID of a customer in the authenticated company and environment. Copy the id returned when creating or retrieving the customer. Direct Pix requires a valid CPF/CNPJ. Direct boleto requires a name, valid email address, CPF/CNPJ, and address including CEP and street number; complete those fields on the customer record. |
+| `customer_id` | `String.t()` | Yes | ID of a customer in the authenticated company and environment. Use the id from the customer creation response immediately, or look up the customer by ID. Direct Pix issuance requires a valid CPF/CNPJ. Direct boleto issuance requires a name, valid email, CPF/CNPJ, and address including postal code and street number. |
 | `amount_cents` | `integer()` | Yes | Charge amount in Brazilian real cents. For example, 10000 represents BRL 100.00. |
 | `payment_method` | `0 \| 1 \| 2` | No | Charge payment method. Omit it or send 0 to allow selection in checkout. Without payment_method_types, 1 requests Pix and 2 requests boleto at creation, subject to enabled methods. Boleto uses the customer's address and fills missing fields from the CEP when available. With a custom list, send 0 or omit this field; issuance occurs after the checkout selection. |
 | `due_date` | `integer()` | Yes | Due date in Unix seconds UTC, at least five minutes in the future. The latest date is today plus ten years, using the São Paulo calendar. |
@@ -177,10 +177,10 @@ List customers.
 | `after` | `String.t()` | No | Copy page.next_after from the previous response to move forward. Use the cursor unchanged, keep the same filters, and do not send before as well. |
 | `before` | `String.t()` | No | Copy page.previous_before from the previous response to go back one page. Keep the same filters and do not send after as well. |
 | `identifier` | `String.t()` | No | Customer's public identifier, with the cus_ prefix. |
-| `name` | `String.t()` | No | Search by customer name, with the newest records first. Leave it empty to ignore this filter. |
+| `name` | `String.t()` | No | Searches by customer name, with the newest records first. New or updated customers can be temporarily missing from the results. After a name change, searching for the old name can still return the customer with the new name. Leave empty to ignore this filter. |
 | `email` | `String.t()` | No | Filter by the customer's complete email address. |
 | `document` | `String.t()` | No | Filter by the customer's complete CPF or CNPJ, with or without periods, slash, hyphen, and spaces. |
-| `external_reference` | `String.t()` | No | Filter by the customer's current reference in your system, matching the complete value, including case and accents. It can be combined with other filters. After creating or editing the customer, search may take a few seconds to reflect the reference. Preserve the value when navigating by cursor. |
+| `external_reference` | `String.t()` | No | Filters by the customer's current reference in your system. It matches the complete value, including letter case and accents. New or updated customers can be temporarily missing from the results. Keep the value when navigating by cursor. |
 
 ### DeleteCustomersBatchParams
 
@@ -451,7 +451,7 @@ Rotate the signing secret.
 
 | Field | Elixir value | Required | Description |
 | --- | --- | --- | --- |
-| `grace_period_seconds` | `integer()` | No | Period during which the previous secret can continue signing deliveries. Zero generates a new signature and ends the validity of previous secrets, including during an active transition. Requests already authorized or in progress may arrive with the previous signature. |
+| `grace_period_seconds` | `integer()` | No | Period during which the previous secret may continue signing deliveries. Zero generates a new secret and ends the validity of previous secrets, including during an active transition. Requests already authorized or in progress may arrive with the previous signature. |
 
 ### ListWithdrawalDestinationsParams
 
@@ -562,13 +562,41 @@ values receive names only when the contract publishes explicit labels.
 | `Raims.EnumValues.create_checkout_logo_upload_request_content_type_image_png()` | `"image/png"` |
 | `Raims.EnumValues.create_payment_link_request_payment_method_types_item_boleto()` | `2` |
 | `Raims.EnumValues.create_payment_link_request_payment_method_types_item_pix()` | `1` |
+| `Raims.EnumValues.create_webhook_request_events_item_account_restored()` | `"account.restored"` |
+| `Raims.EnumValues.create_webhook_request_events_item_balance_hold_created()` | `"balance.hold.created"` |
+| `Raims.EnumValues.create_webhook_request_events_item_balance_hold_released()` | `"balance.hold.released"` |
+| `Raims.EnumValues.create_webhook_request_events_item_boleto_available()` | `"boleto.available"` |
+| `Raims.EnumValues.create_webhook_request_events_item_boleto_compensated()` | `"boleto.compensated"` |
+| `Raims.EnumValues.create_webhook_request_events_item_boleto_issuance_failed()` | `"boleto.issuance_failed"` |
 | `Raims.EnumValues.create_webhook_request_events_item_charge_canceled()` | `"charge.canceled"` |
 | `Raims.EnumValues.create_webhook_request_events_item_charge_created()` | `"charge.created"` |
+| `Raims.EnumValues.create_webhook_request_events_item_charge_expired()` | `"charge.expired"` |
 | `Raims.EnumValues.create_webhook_request_events_item_charge_failed()` | `"charge.failed"` |
+| `Raims.EnumValues.create_webhook_request_events_item_charge_fully_refunded()` | `"charge.fully_refunded"` |
 | `Raims.EnumValues.create_webhook_request_events_item_charge_paid()` | `"charge.paid"` |
+| `Raims.EnumValues.create_webhook_request_events_item_charge_updated()` | `"charge.updated"` |
+| `Raims.EnumValues.create_webhook_request_events_item_customer_created()` | `"customer.created"` |
+| `Raims.EnumValues.create_webhook_request_events_item_customer_deleted()` | `"customer.deleted"` |
+| `Raims.EnumValues.create_webhook_request_events_item_customer_updated()` | `"customer.updated"` |
+| `Raims.EnumValues.create_webhook_request_events_item_dispute_closed()` | `"dispute.closed"` |
+| `Raims.EnumValues.create_webhook_request_events_item_dispute_funds_debited()` | `"dispute.funds_debited"` |
+| `Raims.EnumValues.create_webhook_request_events_item_dispute_opened()` | `"dispute.opened"` |
+| `Raims.EnumValues.create_webhook_request_events_item_dispute_updated()` | `"dispute.updated"` |
+| `Raims.EnumValues.create_webhook_request_events_item_payment_link_created()` | `"payment_link.created"` |
+| `Raims.EnumValues.create_webhook_request_events_item_payment_link_updated()` | `"payment_link.updated"` |
+| `Raims.EnumValues.create_webhook_request_events_item_pix_available()` | `"pix.available"` |
+| `Raims.EnumValues.create_webhook_request_events_item_pix_issuance_failed()` | `"pix.issuance_failed"` |
+| `Raims.EnumValues.create_webhook_request_events_item_pix_refund_received()` | `"pix_refund.received"` |
+| `Raims.EnumValues.create_webhook_request_events_item_refund_accepted()` | `"refund.accepted"` |
 | `Raims.EnumValues.create_webhook_request_events_item_refund_completed()` | `"refund.completed"` |
 | `Raims.EnumValues.create_webhook_request_events_item_refund_failed()` | `"refund.failed"` |
 | `Raims.EnumValues.create_webhook_request_events_item_refund_requested()` | `"refund.requested"` |
+| `Raims.EnumValues.create_webhook_request_events_item_statement_created()` | `"statement.created"` |
+| `Raims.EnumValues.create_webhook_request_events_item_ted_received()` | `"ted.received"` |
+| `Raims.EnumValues.create_webhook_request_events_item_withdrawal_accepted()` | `"withdrawal.accepted"` |
+| `Raims.EnumValues.create_webhook_request_events_item_withdrawal_completed()` | `"withdrawal.completed"` |
+| `Raims.EnumValues.create_webhook_request_events_item_withdrawal_failed()` | `"withdrawal.failed"` |
+| `Raims.EnumValues.create_webhook_request_events_item_withdrawal_requested()` | `"withdrawal.requested"` |
 | `Raims.EnumValues.customer_created_tax_id_type_cnpj()` | `"cnpj"` |
 | `Raims.EnumValues.customer_created_tax_id_type_cpf()` | `"cpf"` |
 | `Raims.EnumValues.customer_list_item_tax_id_type_cnpj()` | `"cnpj"` |
@@ -653,13 +681,41 @@ values receive names only when the contract publishes explicit labels.
 | `Raims.EnumValues.webhook_created_disabled_reason_manual()` | `"manual"` |
 | `Raims.EnumValues.webhook_disabled_reason_continuous_failure()` | `"continuous_failure"` |
 | `Raims.EnumValues.webhook_disabled_reason_manual()` | `"manual"` |
+| `Raims.EnumValues.webhook_event_type_code_account_restored()` | `"account.restored"` |
+| `Raims.EnumValues.webhook_event_type_code_balance_hold_created()` | `"balance.hold.created"` |
+| `Raims.EnumValues.webhook_event_type_code_balance_hold_released()` | `"balance.hold.released"` |
+| `Raims.EnumValues.webhook_event_type_code_boleto_available()` | `"boleto.available"` |
+| `Raims.EnumValues.webhook_event_type_code_boleto_compensated()` | `"boleto.compensated"` |
+| `Raims.EnumValues.webhook_event_type_code_boleto_issuance_failed()` | `"boleto.issuance_failed"` |
 | `Raims.EnumValues.webhook_event_type_code_charge_canceled()` | `"charge.canceled"` |
 | `Raims.EnumValues.webhook_event_type_code_charge_created()` | `"charge.created"` |
+| `Raims.EnumValues.webhook_event_type_code_charge_expired()` | `"charge.expired"` |
 | `Raims.EnumValues.webhook_event_type_code_charge_failed()` | `"charge.failed"` |
+| `Raims.EnumValues.webhook_event_type_code_charge_fully_refunded()` | `"charge.fully_refunded"` |
 | `Raims.EnumValues.webhook_event_type_code_charge_paid()` | `"charge.paid"` |
+| `Raims.EnumValues.webhook_event_type_code_charge_updated()` | `"charge.updated"` |
+| `Raims.EnumValues.webhook_event_type_code_customer_created()` | `"customer.created"` |
+| `Raims.EnumValues.webhook_event_type_code_customer_deleted()` | `"customer.deleted"` |
+| `Raims.EnumValues.webhook_event_type_code_customer_updated()` | `"customer.updated"` |
+| `Raims.EnumValues.webhook_event_type_code_dispute_closed()` | `"dispute.closed"` |
+| `Raims.EnumValues.webhook_event_type_code_dispute_funds_debited()` | `"dispute.funds_debited"` |
+| `Raims.EnumValues.webhook_event_type_code_dispute_opened()` | `"dispute.opened"` |
+| `Raims.EnumValues.webhook_event_type_code_dispute_updated()` | `"dispute.updated"` |
+| `Raims.EnumValues.webhook_event_type_code_payment_link_created()` | `"payment_link.created"` |
+| `Raims.EnumValues.webhook_event_type_code_payment_link_updated()` | `"payment_link.updated"` |
+| `Raims.EnumValues.webhook_event_type_code_pix_available()` | `"pix.available"` |
+| `Raims.EnumValues.webhook_event_type_code_pix_issuance_failed()` | `"pix.issuance_failed"` |
+| `Raims.EnumValues.webhook_event_type_code_pix_refund_received()` | `"pix_refund.received"` |
+| `Raims.EnumValues.webhook_event_type_code_refund_accepted()` | `"refund.accepted"` |
 | `Raims.EnumValues.webhook_event_type_code_refund_completed()` | `"refund.completed"` |
 | `Raims.EnumValues.webhook_event_type_code_refund_failed()` | `"refund.failed"` |
 | `Raims.EnumValues.webhook_event_type_code_refund_requested()` | `"refund.requested"` |
+| `Raims.EnumValues.webhook_event_type_code_statement_created()` | `"statement.created"` |
+| `Raims.EnumValues.webhook_event_type_code_ted_received()` | `"ted.received"` |
+| `Raims.EnumValues.webhook_event_type_code_withdrawal_accepted()` | `"withdrawal.accepted"` |
+| `Raims.EnumValues.webhook_event_type_code_withdrawal_completed()` | `"withdrawal.completed"` |
+| `Raims.EnumValues.webhook_event_type_code_withdrawal_failed()` | `"withdrawal.failed"` |
+| `Raims.EnumValues.webhook_event_type_code_withdrawal_requested()` | `"withdrawal.requested"` |
 | `Raims.EnumValues.webhook_health_status_disabled()` | `"disabled"` |
 | `Raims.EnumValues.webhook_health_status_failing()` | `"failing"` |
 | `Raims.EnumValues.webhook_health_status_healthy()` | `"healthy"` |

@@ -209,17 +209,83 @@ defmodule Raims.EnumValues do
   @spec create_payment_link_request_payment_method_types_item_pix() :: 1
   def create_payment_link_request_payment_method_types_item_pix(), do: 1
 
+  @spec create_webhook_request_events_item_account_restored() :: String.t()
+  def create_webhook_request_events_item_account_restored(), do: "account.restored"
+
+  @spec create_webhook_request_events_item_balance_hold_created() :: String.t()
+  def create_webhook_request_events_item_balance_hold_created(), do: "balance.hold.created"
+
+  @spec create_webhook_request_events_item_balance_hold_released() :: String.t()
+  def create_webhook_request_events_item_balance_hold_released(), do: "balance.hold.released"
+
+  @spec create_webhook_request_events_item_boleto_available() :: String.t()
+  def create_webhook_request_events_item_boleto_available(), do: "boleto.available"
+
+  @spec create_webhook_request_events_item_boleto_compensated() :: String.t()
+  def create_webhook_request_events_item_boleto_compensated(), do: "boleto.compensated"
+
+  @spec create_webhook_request_events_item_boleto_issuance_failed() :: String.t()
+  def create_webhook_request_events_item_boleto_issuance_failed(), do: "boleto.issuance_failed"
+
   @spec create_webhook_request_events_item_charge_canceled() :: String.t()
   def create_webhook_request_events_item_charge_canceled(), do: "charge.canceled"
 
   @spec create_webhook_request_events_item_charge_created() :: String.t()
   def create_webhook_request_events_item_charge_created(), do: "charge.created"
 
+  @spec create_webhook_request_events_item_charge_expired() :: String.t()
+  def create_webhook_request_events_item_charge_expired(), do: "charge.expired"
+
   @spec create_webhook_request_events_item_charge_failed() :: String.t()
   def create_webhook_request_events_item_charge_failed(), do: "charge.failed"
 
+  @spec create_webhook_request_events_item_charge_fully_refunded() :: String.t()
+  def create_webhook_request_events_item_charge_fully_refunded(), do: "charge.fully_refunded"
+
   @spec create_webhook_request_events_item_charge_paid() :: String.t()
   def create_webhook_request_events_item_charge_paid(), do: "charge.paid"
+
+  @spec create_webhook_request_events_item_charge_updated() :: String.t()
+  def create_webhook_request_events_item_charge_updated(), do: "charge.updated"
+
+  @spec create_webhook_request_events_item_customer_created() :: String.t()
+  def create_webhook_request_events_item_customer_created(), do: "customer.created"
+
+  @spec create_webhook_request_events_item_customer_deleted() :: String.t()
+  def create_webhook_request_events_item_customer_deleted(), do: "customer.deleted"
+
+  @spec create_webhook_request_events_item_customer_updated() :: String.t()
+  def create_webhook_request_events_item_customer_updated(), do: "customer.updated"
+
+  @spec create_webhook_request_events_item_dispute_closed() :: String.t()
+  def create_webhook_request_events_item_dispute_closed(), do: "dispute.closed"
+
+  @spec create_webhook_request_events_item_dispute_funds_debited() :: String.t()
+  def create_webhook_request_events_item_dispute_funds_debited(), do: "dispute.funds_debited"
+
+  @spec create_webhook_request_events_item_dispute_opened() :: String.t()
+  def create_webhook_request_events_item_dispute_opened(), do: "dispute.opened"
+
+  @spec create_webhook_request_events_item_dispute_updated() :: String.t()
+  def create_webhook_request_events_item_dispute_updated(), do: "dispute.updated"
+
+  @spec create_webhook_request_events_item_payment_link_created() :: String.t()
+  def create_webhook_request_events_item_payment_link_created(), do: "payment_link.created"
+
+  @spec create_webhook_request_events_item_payment_link_updated() :: String.t()
+  def create_webhook_request_events_item_payment_link_updated(), do: "payment_link.updated"
+
+  @spec create_webhook_request_events_item_pix_available() :: String.t()
+  def create_webhook_request_events_item_pix_available(), do: "pix.available"
+
+  @spec create_webhook_request_events_item_pix_issuance_failed() :: String.t()
+  def create_webhook_request_events_item_pix_issuance_failed(), do: "pix.issuance_failed"
+
+  @spec create_webhook_request_events_item_pix_refund_received() :: String.t()
+  def create_webhook_request_events_item_pix_refund_received(), do: "pix_refund.received"
+
+  @spec create_webhook_request_events_item_refund_accepted() :: String.t()
+  def create_webhook_request_events_item_refund_accepted(), do: "refund.accepted"
 
   @spec create_webhook_request_events_item_refund_completed() :: String.t()
   def create_webhook_request_events_item_refund_completed(), do: "refund.completed"
@@ -229,6 +295,24 @@ defmodule Raims.EnumValues do
 
   @spec create_webhook_request_events_item_refund_requested() :: String.t()
   def create_webhook_request_events_item_refund_requested(), do: "refund.requested"
+
+  @spec create_webhook_request_events_item_statement_created() :: String.t()
+  def create_webhook_request_events_item_statement_created(), do: "statement.created"
+
+  @spec create_webhook_request_events_item_ted_received() :: String.t()
+  def create_webhook_request_events_item_ted_received(), do: "ted.received"
+
+  @spec create_webhook_request_events_item_withdrawal_accepted() :: String.t()
+  def create_webhook_request_events_item_withdrawal_accepted(), do: "withdrawal.accepted"
+
+  @spec create_webhook_request_events_item_withdrawal_completed() :: String.t()
+  def create_webhook_request_events_item_withdrawal_completed(), do: "withdrawal.completed"
+
+  @spec create_webhook_request_events_item_withdrawal_failed() :: String.t()
+  def create_webhook_request_events_item_withdrawal_failed(), do: "withdrawal.failed"
+
+  @spec create_webhook_request_events_item_withdrawal_requested() :: String.t()
+  def create_webhook_request_events_item_withdrawal_requested(), do: "withdrawal.requested"
 
   @spec customer_created_tax_id_type_cnpj() :: String.t()
   def customer_created_tax_id_type_cnpj(), do: "cnpj"
@@ -482,17 +566,83 @@ defmodule Raims.EnumValues do
   @spec webhook_disabled_reason_manual() :: String.t()
   def webhook_disabled_reason_manual(), do: "manual"
 
+  @spec webhook_event_type_code_account_restored() :: String.t()
+  def webhook_event_type_code_account_restored(), do: "account.restored"
+
+  @spec webhook_event_type_code_balance_hold_created() :: String.t()
+  def webhook_event_type_code_balance_hold_created(), do: "balance.hold.created"
+
+  @spec webhook_event_type_code_balance_hold_released() :: String.t()
+  def webhook_event_type_code_balance_hold_released(), do: "balance.hold.released"
+
+  @spec webhook_event_type_code_boleto_available() :: String.t()
+  def webhook_event_type_code_boleto_available(), do: "boleto.available"
+
+  @spec webhook_event_type_code_boleto_compensated() :: String.t()
+  def webhook_event_type_code_boleto_compensated(), do: "boleto.compensated"
+
+  @spec webhook_event_type_code_boleto_issuance_failed() :: String.t()
+  def webhook_event_type_code_boleto_issuance_failed(), do: "boleto.issuance_failed"
+
   @spec webhook_event_type_code_charge_canceled() :: String.t()
   def webhook_event_type_code_charge_canceled(), do: "charge.canceled"
 
   @spec webhook_event_type_code_charge_created() :: String.t()
   def webhook_event_type_code_charge_created(), do: "charge.created"
 
+  @spec webhook_event_type_code_charge_expired() :: String.t()
+  def webhook_event_type_code_charge_expired(), do: "charge.expired"
+
   @spec webhook_event_type_code_charge_failed() :: String.t()
   def webhook_event_type_code_charge_failed(), do: "charge.failed"
 
+  @spec webhook_event_type_code_charge_fully_refunded() :: String.t()
+  def webhook_event_type_code_charge_fully_refunded(), do: "charge.fully_refunded"
+
   @spec webhook_event_type_code_charge_paid() :: String.t()
   def webhook_event_type_code_charge_paid(), do: "charge.paid"
+
+  @spec webhook_event_type_code_charge_updated() :: String.t()
+  def webhook_event_type_code_charge_updated(), do: "charge.updated"
+
+  @spec webhook_event_type_code_customer_created() :: String.t()
+  def webhook_event_type_code_customer_created(), do: "customer.created"
+
+  @spec webhook_event_type_code_customer_deleted() :: String.t()
+  def webhook_event_type_code_customer_deleted(), do: "customer.deleted"
+
+  @spec webhook_event_type_code_customer_updated() :: String.t()
+  def webhook_event_type_code_customer_updated(), do: "customer.updated"
+
+  @spec webhook_event_type_code_dispute_closed() :: String.t()
+  def webhook_event_type_code_dispute_closed(), do: "dispute.closed"
+
+  @spec webhook_event_type_code_dispute_funds_debited() :: String.t()
+  def webhook_event_type_code_dispute_funds_debited(), do: "dispute.funds_debited"
+
+  @spec webhook_event_type_code_dispute_opened() :: String.t()
+  def webhook_event_type_code_dispute_opened(), do: "dispute.opened"
+
+  @spec webhook_event_type_code_dispute_updated() :: String.t()
+  def webhook_event_type_code_dispute_updated(), do: "dispute.updated"
+
+  @spec webhook_event_type_code_payment_link_created() :: String.t()
+  def webhook_event_type_code_payment_link_created(), do: "payment_link.created"
+
+  @spec webhook_event_type_code_payment_link_updated() :: String.t()
+  def webhook_event_type_code_payment_link_updated(), do: "payment_link.updated"
+
+  @spec webhook_event_type_code_pix_available() :: String.t()
+  def webhook_event_type_code_pix_available(), do: "pix.available"
+
+  @spec webhook_event_type_code_pix_issuance_failed() :: String.t()
+  def webhook_event_type_code_pix_issuance_failed(), do: "pix.issuance_failed"
+
+  @spec webhook_event_type_code_pix_refund_received() :: String.t()
+  def webhook_event_type_code_pix_refund_received(), do: "pix_refund.received"
+
+  @spec webhook_event_type_code_refund_accepted() :: String.t()
+  def webhook_event_type_code_refund_accepted(), do: "refund.accepted"
 
   @spec webhook_event_type_code_refund_completed() :: String.t()
   def webhook_event_type_code_refund_completed(), do: "refund.completed"
@@ -502,6 +652,24 @@ defmodule Raims.EnumValues do
 
   @spec webhook_event_type_code_refund_requested() :: String.t()
   def webhook_event_type_code_refund_requested(), do: "refund.requested"
+
+  @spec webhook_event_type_code_statement_created() :: String.t()
+  def webhook_event_type_code_statement_created(), do: "statement.created"
+
+  @spec webhook_event_type_code_ted_received() :: String.t()
+  def webhook_event_type_code_ted_received(), do: "ted.received"
+
+  @spec webhook_event_type_code_withdrawal_accepted() :: String.t()
+  def webhook_event_type_code_withdrawal_accepted(), do: "withdrawal.accepted"
+
+  @spec webhook_event_type_code_withdrawal_completed() :: String.t()
+  def webhook_event_type_code_withdrawal_completed(), do: "withdrawal.completed"
+
+  @spec webhook_event_type_code_withdrawal_failed() :: String.t()
+  def webhook_event_type_code_withdrawal_failed(), do: "withdrawal.failed"
+
+  @spec webhook_event_type_code_withdrawal_requested() :: String.t()
+  def webhook_event_type_code_withdrawal_requested(), do: "withdrawal.requested"
 
   @spec webhook_health_status_disabled() :: String.t()
   def webhook_health_status_disabled(), do: "disabled"
