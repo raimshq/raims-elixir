@@ -49,11 +49,15 @@ defmodule Raims.Schema do
     do: validate(value, resolve(reference), mode, depth + 1)
 
   defp validate(value, schema, mode, depth) when is_map(schema) do
-    variants = schema["anyOf"] || schema["oneOf"]
-
     cond do
-      is_list(variants) ->
-        Enum.any?(variants, &validate(value, &1, mode, depth + 1))
+      is_list(schema["oneOf"]) ->
+        is_binary(value) and String.valid?(value) and
+          Enum.count(schema["oneOf"], fn %{"pattern" => pattern} ->
+            Regex.match?(Regex.compile!("\\A(?:" <> pattern <> ")\\z"), value)
+          end) == 1
+
+      is_list(schema["anyOf"]) ->
+        Enum.any?(schema["anyOf"], &validate(value, &1, mode, depth + 1))
 
       Map.has_key?(schema, "allOf") ->
         Enum.all?(schema["allOf"], &validate(value, &1, mode, depth + 1))
@@ -108,6 +112,9 @@ defmodule Raims.Schema do
     additional = schema["additionalProperties"]
 
     Enum.all?(schema["required"] || [], &Map.has_key?(value, &1)) and
+      Enum.all?(schema["dependentRequired"] || %{}, fn {key, required} ->
+        not Map.has_key?(value, key) or Enum.all?(required, &Map.has_key?(value, &1))
+      end) and
       Enum.all?(value, fn {key, child} ->
         is_binary(key) and
           (mode != :request or not is_map(schema["propertyNames"]) or
@@ -171,11 +178,14 @@ defmodule Raims.Schema do
   defp hydrate(value, schema, depth) do
     reference = schema["$ref"]
     resolved = if reference, do: resolve(reference), else: schema
-    variants = resolved["anyOf"] || resolved["oneOf"]
+    variants = resolved["anyOf"]
 
     cond do
       Map.has_key?(resolved, "$ref") ->
         hydrate(value, resolved, depth + 1)
+
+      is_list(resolved["oneOf"]) ->
+        if valid?(value, resolved), do: value, else: raise(Raims.Error.new(:unexpected_response))
 
       is_list(variants) ->
         child = Enum.find(variants, &valid?(value, &1)) || %{}
