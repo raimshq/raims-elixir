@@ -29,6 +29,18 @@ defmodule Raims.EnumValues do
   @spec account_context_timestamp_unit_unix_seconds() :: String.t()
   def account_context_timestamp_unit_unix_seconds(), do: "unix_seconds"
 
+  @spec account_restored_webhook_event_data_payment_method_boleto() :: String.t()
+  def account_restored_webhook_event_data_payment_method_boleto(), do: "boleto"
+
+  @spec account_restored_webhook_event_data_payment_method_credit_card() :: String.t()
+  def account_restored_webhook_event_data_payment_method_credit_card(), do: "credit_card"
+
+  @spec account_restored_webhook_event_data_payment_method_debit() :: String.t()
+  def account_restored_webhook_event_data_payment_method_debit(), do: "debit"
+
+  @spec account_restored_webhook_event_data_payment_method_pix() :: String.t()
+  def account_restored_webhook_event_data_payment_method_pix(), do: "pix"
+
   @spec balance_forecast_period_last_15_days() :: String.t()
   def balance_forecast_period_last_15_days(), do: "last_15_days"
 
@@ -41,11 +53,203 @@ defmodule Raims.EnumValues do
   @spec balance_forecast_period_today() :: String.t()
   def balance_forecast_period_today(), do: "today"
 
+  @spec balance_hold_created_webhook_event_data_payment_method_boleto() :: String.t()
+  def balance_hold_created_webhook_event_data_payment_method_boleto(), do: "boleto"
+
+  @spec balance_hold_created_webhook_event_data_payment_method_credit_card() :: String.t()
+  def balance_hold_created_webhook_event_data_payment_method_credit_card(), do: "credit_card"
+
+  @spec balance_hold_created_webhook_event_data_payment_method_debit() :: String.t()
+  def balance_hold_created_webhook_event_data_payment_method_debit(), do: "debit"
+
+  @spec balance_hold_created_webhook_event_data_payment_method_pix() :: String.t()
+  def balance_hold_created_webhook_event_data_payment_method_pix(), do: "pix"
+
+  @spec balance_hold_released_webhook_event_data_payment_method_boleto() :: String.t()
+  def balance_hold_released_webhook_event_data_payment_method_boleto(), do: "boleto"
+
+  @spec balance_hold_released_webhook_event_data_payment_method_credit_card() :: String.t()
+  def balance_hold_released_webhook_event_data_payment_method_credit_card(), do: "credit_card"
+
+  @spec balance_hold_released_webhook_event_data_payment_method_debit() :: String.t()
+  def balance_hold_released_webhook_event_data_payment_method_debit(), do: "debit"
+
+  @spec balance_hold_released_webhook_event_data_payment_method_pix() :: String.t()
+  def balance_hold_released_webhook_event_data_payment_method_pix(), do: "pix"
+
+  @spec boleto_available_webhook_event_data_payment_method_boleto() :: String.t()
+  def boleto_available_webhook_event_data_payment_method_boleto(), do: "boleto"
+
+  @spec boleto_available_webhook_event_data_payment_method_credit_card() :: String.t()
+  def boleto_available_webhook_event_data_payment_method_credit_card(), do: "credit_card"
+
+  @spec boleto_available_webhook_event_data_payment_method_debit() :: String.t()
+  def boleto_available_webhook_event_data_payment_method_debit(), do: "debit"
+
+  @spec boleto_available_webhook_event_data_payment_method_pix() :: String.t()
+  def boleto_available_webhook_event_data_payment_method_pix(), do: "pix"
+
+  @spec boleto_available_webhook_event_environment_production() :: String.t()
+  def boleto_available_webhook_event_environment_production(), do: "production"
+
+  @spec boleto_available_webhook_event_environment_sandbox() :: String.t()
+  def boleto_available_webhook_event_environment_sandbox(), do: "sandbox"
+
+  @spec boleto_compensated_webhook_event_data_payment_method_boleto() :: String.t()
+  def boleto_compensated_webhook_event_data_payment_method_boleto(), do: "boleto"
+
+  @spec boleto_compensated_webhook_event_data_payment_method_credit_card() :: String.t()
+  def boleto_compensated_webhook_event_data_payment_method_credit_card(), do: "credit_card"
+
+  @spec boleto_compensated_webhook_event_data_payment_method_debit() :: String.t()
+  def boleto_compensated_webhook_event_data_payment_method_debit(), do: "debit"
+
+  @spec boleto_compensated_webhook_event_data_payment_method_pix() :: String.t()
+  def boleto_compensated_webhook_event_data_payment_method_pix(), do: "pix"
+
+  @spec boleto_compensated_webhook_event_environment_production() :: String.t()
+  def boleto_compensated_webhook_event_environment_production(), do: "production"
+
+  @spec boleto_compensated_webhook_event_environment_sandbox() :: String.t()
+  def boleto_compensated_webhook_event_environment_sandbox(), do: "sandbox"
+
+  @spec boleto_issuance_failed_webhook_event_data_payment_method_boleto() :: String.t()
+  def boleto_issuance_failed_webhook_event_data_payment_method_boleto(), do: "boleto"
+
+  @spec boleto_issuance_failed_webhook_event_data_payment_method_credit_card() :: String.t()
+  def boleto_issuance_failed_webhook_event_data_payment_method_credit_card(), do: "credit_card"
+
+  @spec boleto_issuance_failed_webhook_event_data_payment_method_debit() :: String.t()
+  def boleto_issuance_failed_webhook_event_data_payment_method_debit(), do: "debit"
+
+  @spec boleto_issuance_failed_webhook_event_data_payment_method_pix() :: String.t()
+  def boleto_issuance_failed_webhook_event_data_payment_method_pix(), do: "pix"
+
+  @spec boleto_issuance_failed_webhook_event_environment_production() :: String.t()
+  def boleto_issuance_failed_webhook_event_environment_production(), do: "production"
+
+  @spec boleto_issuance_failed_webhook_event_environment_sandbox() :: String.t()
+  def boleto_issuance_failed_webhook_event_environment_sandbox(), do: "sandbox"
+
+  @spec boleto_overpayment_received_webhook_event_data_payment_method_boleto() :: String.t()
+  def boleto_overpayment_received_webhook_event_data_payment_method_boleto(), do: "boleto"
+
+  @spec boleto_overpayment_received_webhook_event_data_payment_method_credit_card() :: String.t()
+  def boleto_overpayment_received_webhook_event_data_payment_method_credit_card(), do: "credit_card"
+
+  @spec boleto_overpayment_received_webhook_event_data_payment_method_debit() :: String.t()
+  def boleto_overpayment_received_webhook_event_data_payment_method_debit(), do: "debit"
+
+  @spec boleto_overpayment_received_webhook_event_data_payment_method_pix() :: String.t()
+  def boleto_overpayment_received_webhook_event_data_payment_method_pix(), do: "pix"
+
+  @spec boleto_partial_settlement_detected_webhook_event_data_payment_method_boleto() :: String.t()
+  def boleto_partial_settlement_detected_webhook_event_data_payment_method_boleto(), do: "boleto"
+
+  @spec boleto_partial_settlement_detected_webhook_event_data_payment_method_credit_card() :: String.t()
+  def boleto_partial_settlement_detected_webhook_event_data_payment_method_credit_card(), do: "credit_card"
+
+  @spec boleto_partial_settlement_detected_webhook_event_data_payment_method_debit() :: String.t()
+  def boleto_partial_settlement_detected_webhook_event_data_payment_method_debit(), do: "debit"
+
+  @spec boleto_partial_settlement_detected_webhook_event_data_payment_method_pix() :: String.t()
+  def boleto_partial_settlement_detected_webhook_event_data_payment_method_pix(), do: "pix"
+
+  @spec charge_canceled_webhook_event_data_payment_method_boleto() :: String.t()
+  def charge_canceled_webhook_event_data_payment_method_boleto(), do: "boleto"
+
+  @spec charge_canceled_webhook_event_data_payment_method_credit_card() :: String.t()
+  def charge_canceled_webhook_event_data_payment_method_credit_card(), do: "credit_card"
+
+  @spec charge_canceled_webhook_event_data_payment_method_debit() :: String.t()
+  def charge_canceled_webhook_event_data_payment_method_debit(), do: "debit"
+
+  @spec charge_canceled_webhook_event_data_payment_method_pix() :: String.t()
+  def charge_canceled_webhook_event_data_payment_method_pix(), do: "pix"
+
+  @spec charge_canceled_webhook_event_environment_production() :: String.t()
+  def charge_canceled_webhook_event_environment_production(), do: "production"
+
+  @spec charge_canceled_webhook_event_environment_sandbox() :: String.t()
+  def charge_canceled_webhook_event_environment_sandbox(), do: "sandbox"
+
   @spec charge_created_payment_method_types_item_boleto() :: 2
   def charge_created_payment_method_types_item_boleto(), do: 2
 
   @spec charge_created_payment_method_types_item_pix() :: 1
   def charge_created_payment_method_types_item_pix(), do: 1
+
+  @spec charge_created_webhook_event_data_payment_method_boleto() :: String.t()
+  def charge_created_webhook_event_data_payment_method_boleto(), do: "boleto"
+
+  @spec charge_created_webhook_event_data_payment_method_credit_card() :: String.t()
+  def charge_created_webhook_event_data_payment_method_credit_card(), do: "credit_card"
+
+  @spec charge_created_webhook_event_data_payment_method_debit() :: String.t()
+  def charge_created_webhook_event_data_payment_method_debit(), do: "debit"
+
+  @spec charge_created_webhook_event_data_payment_method_pix() :: String.t()
+  def charge_created_webhook_event_data_payment_method_pix(), do: "pix"
+
+  @spec charge_created_webhook_event_environment_production() :: String.t()
+  def charge_created_webhook_event_environment_production(), do: "production"
+
+  @spec charge_created_webhook_event_environment_sandbox() :: String.t()
+  def charge_created_webhook_event_environment_sandbox(), do: "sandbox"
+
+  @spec charge_expired_webhook_event_data_payment_method_boleto() :: String.t()
+  def charge_expired_webhook_event_data_payment_method_boleto(), do: "boleto"
+
+  @spec charge_expired_webhook_event_data_payment_method_credit_card() :: String.t()
+  def charge_expired_webhook_event_data_payment_method_credit_card(), do: "credit_card"
+
+  @spec charge_expired_webhook_event_data_payment_method_debit() :: String.t()
+  def charge_expired_webhook_event_data_payment_method_debit(), do: "debit"
+
+  @spec charge_expired_webhook_event_data_payment_method_pix() :: String.t()
+  def charge_expired_webhook_event_data_payment_method_pix(), do: "pix"
+
+  @spec charge_expired_webhook_event_environment_production() :: String.t()
+  def charge_expired_webhook_event_environment_production(), do: "production"
+
+  @spec charge_expired_webhook_event_environment_sandbox() :: String.t()
+  def charge_expired_webhook_event_environment_sandbox(), do: "sandbox"
+
+  @spec charge_failed_webhook_event_data_payment_method_boleto() :: String.t()
+  def charge_failed_webhook_event_data_payment_method_boleto(), do: "boleto"
+
+  @spec charge_failed_webhook_event_data_payment_method_credit_card() :: String.t()
+  def charge_failed_webhook_event_data_payment_method_credit_card(), do: "credit_card"
+
+  @spec charge_failed_webhook_event_data_payment_method_debit() :: String.t()
+  def charge_failed_webhook_event_data_payment_method_debit(), do: "debit"
+
+  @spec charge_failed_webhook_event_data_payment_method_pix() :: String.t()
+  def charge_failed_webhook_event_data_payment_method_pix(), do: "pix"
+
+  @spec charge_failed_webhook_event_environment_production() :: String.t()
+  def charge_failed_webhook_event_environment_production(), do: "production"
+
+  @spec charge_failed_webhook_event_environment_sandbox() :: String.t()
+  def charge_failed_webhook_event_environment_sandbox(), do: "sandbox"
+
+  @spec charge_fully_refunded_webhook_event_data_payment_method_boleto() :: String.t()
+  def charge_fully_refunded_webhook_event_data_payment_method_boleto(), do: "boleto"
+
+  @spec charge_fully_refunded_webhook_event_data_payment_method_credit_card() :: String.t()
+  def charge_fully_refunded_webhook_event_data_payment_method_credit_card(), do: "credit_card"
+
+  @spec charge_fully_refunded_webhook_event_data_payment_method_debit() :: String.t()
+  def charge_fully_refunded_webhook_event_data_payment_method_debit(), do: "debit"
+
+  @spec charge_fully_refunded_webhook_event_data_payment_method_pix() :: String.t()
+  def charge_fully_refunded_webhook_event_data_payment_method_pix(), do: "pix"
+
+  @spec charge_fully_refunded_webhook_event_environment_production() :: String.t()
+  def charge_fully_refunded_webhook_event_environment_production(), do: "production"
+
+  @spec charge_fully_refunded_webhook_event_environment_sandbox() :: String.t()
+  def charge_fully_refunded_webhook_event_environment_sandbox(), do: "sandbox"
 
   @spec charge_list_item_payment_method_types_item_boleto() :: 2
   def charge_list_item_payment_method_types_item_boleto(), do: 2
@@ -53,11 +257,50 @@ defmodule Raims.EnumValues do
   @spec charge_list_item_payment_method_types_item_pix() :: 1
   def charge_list_item_payment_method_types_item_pix(), do: 1
 
+  @spec charge_paid_webhook_event_data_payment_method_boleto() :: String.t()
+  def charge_paid_webhook_event_data_payment_method_boleto(), do: "boleto"
+
+  @spec charge_paid_webhook_event_data_payment_method_credit_card() :: String.t()
+  def charge_paid_webhook_event_data_payment_method_credit_card(), do: "credit_card"
+
+  @spec charge_paid_webhook_event_data_payment_method_debit() :: String.t()
+  def charge_paid_webhook_event_data_payment_method_debit(), do: "debit"
+
+  @spec charge_paid_webhook_event_data_payment_method_pix() :: String.t()
+  def charge_paid_webhook_event_data_payment_method_pix(), do: "pix"
+
+  @spec charge_paid_webhook_event_environment_production() :: String.t()
+  def charge_paid_webhook_event_environment_production(), do: "production"
+
+  @spec charge_paid_webhook_event_environment_sandbox() :: String.t()
+  def charge_paid_webhook_event_environment_sandbox(), do: "sandbox"
+
+  @spec charge_partially_refunded_webhook_event_data_payment_method_boleto() :: String.t()
+  def charge_partially_refunded_webhook_event_data_payment_method_boleto(), do: "boleto"
+
+  @spec charge_partially_refunded_webhook_event_data_payment_method_credit_card() :: String.t()
+  def charge_partially_refunded_webhook_event_data_payment_method_credit_card(), do: "credit_card"
+
+  @spec charge_partially_refunded_webhook_event_data_payment_method_debit() :: String.t()
+  def charge_partially_refunded_webhook_event_data_payment_method_debit(), do: "debit"
+
+  @spec charge_partially_refunded_webhook_event_data_payment_method_pix() :: String.t()
+  def charge_partially_refunded_webhook_event_data_payment_method_pix(), do: "pix"
+
+  @spec charge_partially_refunded_webhook_event_environment_production() :: String.t()
+  def charge_partially_refunded_webhook_event_environment_production(), do: "production"
+
+  @spec charge_partially_refunded_webhook_event_environment_sandbox() :: String.t()
+  def charge_partially_refunded_webhook_event_environment_sandbox(), do: "sandbox"
+
   @spec charge_payment_information_boleto_payment_status_awaiting_payment() :: String.t()
   def charge_payment_information_boleto_payment_status_awaiting_payment(), do: "awaiting_payment"
 
   @spec charge_payment_information_boleto_payment_status_compensated() :: String.t()
   def charge_payment_information_boleto_payment_status_compensated(), do: "compensated"
+
+  @spec charge_payment_information_boleto_payment_status_partially_settled() :: String.t()
+  def charge_payment_information_boleto_payment_status_partially_settled(), do: "partially_settled"
 
   @spec charge_payment_information_boleto_payment_status_settled() :: String.t()
   def charge_payment_information_boleto_payment_status_settled(), do: "settled"
@@ -85,6 +328,42 @@ defmodule Raims.EnumValues do
 
   @spec charge_payment_information_pix_status_pending() :: String.t()
   def charge_payment_information_pix_status_pending(), do: "pending"
+
+  @spec charge_payment_instructions_available_webhook_event_data_payment_method_boleto() :: String.t()
+  def charge_payment_instructions_available_webhook_event_data_payment_method_boleto(), do: "boleto"
+
+  @spec charge_payment_instructions_available_webhook_event_data_payment_method_credit_card() :: String.t()
+  def charge_payment_instructions_available_webhook_event_data_payment_method_credit_card(), do: "credit_card"
+
+  @spec charge_payment_instructions_available_webhook_event_data_payment_method_debit() :: String.t()
+  def charge_payment_instructions_available_webhook_event_data_payment_method_debit(), do: "debit"
+
+  @spec charge_payment_instructions_available_webhook_event_data_payment_method_pix() :: String.t()
+  def charge_payment_instructions_available_webhook_event_data_payment_method_pix(), do: "pix"
+
+  @spec charge_payment_instructions_available_webhook_event_environment_production() :: String.t()
+  def charge_payment_instructions_available_webhook_event_environment_production(), do: "production"
+
+  @spec charge_payment_instructions_available_webhook_event_environment_sandbox() :: String.t()
+  def charge_payment_instructions_available_webhook_event_environment_sandbox(), do: "sandbox"
+
+  @spec charge_payment_instructions_failed_webhook_event_data_payment_method_boleto() :: String.t()
+  def charge_payment_instructions_failed_webhook_event_data_payment_method_boleto(), do: "boleto"
+
+  @spec charge_payment_instructions_failed_webhook_event_data_payment_method_credit_card() :: String.t()
+  def charge_payment_instructions_failed_webhook_event_data_payment_method_credit_card(), do: "credit_card"
+
+  @spec charge_payment_instructions_failed_webhook_event_data_payment_method_debit() :: String.t()
+  def charge_payment_instructions_failed_webhook_event_data_payment_method_debit(), do: "debit"
+
+  @spec charge_payment_instructions_failed_webhook_event_data_payment_method_pix() :: String.t()
+  def charge_payment_instructions_failed_webhook_event_data_payment_method_pix(), do: "pix"
+
+  @spec charge_payment_instructions_failed_webhook_event_environment_production() :: String.t()
+  def charge_payment_instructions_failed_webhook_event_environment_production(), do: "production"
+
+  @spec charge_payment_instructions_failed_webhook_event_environment_sandbox() :: String.t()
+  def charge_payment_instructions_failed_webhook_event_environment_sandbox(), do: "sandbox"
 
   @spec charge_payment_method_types_item_boleto() :: 2
   def charge_payment_method_types_item_boleto(), do: 2
@@ -148,6 +427,24 @@ defmodule Raims.EnumValues do
 
   @spec charge_statistics_period_today() :: String.t()
   def charge_statistics_period_today(), do: "today"
+
+  @spec charge_updated_webhook_event_data_payment_method_boleto() :: String.t()
+  def charge_updated_webhook_event_data_payment_method_boleto(), do: "boleto"
+
+  @spec charge_updated_webhook_event_data_payment_method_credit_card() :: String.t()
+  def charge_updated_webhook_event_data_payment_method_credit_card(), do: "credit_card"
+
+  @spec charge_updated_webhook_event_data_payment_method_debit() :: String.t()
+  def charge_updated_webhook_event_data_payment_method_debit(), do: "debit"
+
+  @spec charge_updated_webhook_event_data_payment_method_pix() :: String.t()
+  def charge_updated_webhook_event_data_payment_method_pix(), do: "pix"
+
+  @spec charge_updated_webhook_event_environment_production() :: String.t()
+  def charge_updated_webhook_event_environment_production(), do: "production"
+
+  @spec charge_updated_webhook_event_environment_sandbox() :: String.t()
+  def charge_updated_webhook_event_environment_sandbox(), do: "sandbox"
 
   @spec checkout_asset_error_code_checkout_asset_invalid_image() :: String.t()
   def checkout_asset_error_code_checkout_asset_invalid_image(), do: "CHECKOUT_ASSET_INVALID_IMAGE"
@@ -218,14 +515,14 @@ defmodule Raims.EnumValues do
   @spec create_webhook_request_events_item_balance_hold_released() :: String.t()
   def create_webhook_request_events_item_balance_hold_released(), do: "balance.hold.released"
 
-  @spec create_webhook_request_events_item_boleto_available() :: String.t()
-  def create_webhook_request_events_item_boleto_available(), do: "boleto.available"
-
   @spec create_webhook_request_events_item_boleto_compensated() :: String.t()
   def create_webhook_request_events_item_boleto_compensated(), do: "boleto.compensated"
 
-  @spec create_webhook_request_events_item_boleto_issuance_failed() :: String.t()
-  def create_webhook_request_events_item_boleto_issuance_failed(), do: "boleto.issuance_failed"
+  @spec create_webhook_request_events_item_boleto_overpayment_received() :: String.t()
+  def create_webhook_request_events_item_boleto_overpayment_received(), do: "boleto.overpayment_received"
+
+  @spec create_webhook_request_events_item_boleto_partial_settlement_detected() :: String.t()
+  def create_webhook_request_events_item_boleto_partial_settlement_detected(), do: "boleto.partial_settlement_detected"
 
   @spec create_webhook_request_events_item_charge_canceled() :: String.t()
   def create_webhook_request_events_item_charge_canceled(), do: "charge.canceled"
@@ -244,6 +541,15 @@ defmodule Raims.EnumValues do
 
   @spec create_webhook_request_events_item_charge_paid() :: String.t()
   def create_webhook_request_events_item_charge_paid(), do: "charge.paid"
+
+  @spec create_webhook_request_events_item_charge_partially_refunded() :: String.t()
+  def create_webhook_request_events_item_charge_partially_refunded(), do: "charge.partially_refunded"
+
+  @spec create_webhook_request_events_item_charge_payment_instructions_available() :: String.t()
+  def create_webhook_request_events_item_charge_payment_instructions_available(), do: "charge.payment_instructions_available"
+
+  @spec create_webhook_request_events_item_charge_payment_instructions_failed() :: String.t()
+  def create_webhook_request_events_item_charge_payment_instructions_failed(), do: "charge.payment_instructions_failed"
 
   @spec create_webhook_request_events_item_charge_updated() :: String.t()
   def create_webhook_request_events_item_charge_updated(), do: "charge.updated"
@@ -275,12 +581,6 @@ defmodule Raims.EnumValues do
   @spec create_webhook_request_events_item_payment_link_updated() :: String.t()
   def create_webhook_request_events_item_payment_link_updated(), do: "payment_link.updated"
 
-  @spec create_webhook_request_events_item_pix_available() :: String.t()
-  def create_webhook_request_events_item_pix_available(), do: "pix.available"
-
-  @spec create_webhook_request_events_item_pix_issuance_failed() :: String.t()
-  def create_webhook_request_events_item_pix_issuance_failed(), do: "pix.issuance_failed"
-
   @spec create_webhook_request_events_item_pix_refund_received() :: String.t()
   def create_webhook_request_events_item_pix_refund_received(), do: "pix_refund.received"
 
@@ -292,6 +592,9 @@ defmodule Raims.EnumValues do
 
   @spec create_webhook_request_events_item_refund_failed() :: String.t()
   def create_webhook_request_events_item_refund_failed(), do: "refund.failed"
+
+  @spec create_webhook_request_events_item_refund_reconciliation_required() :: String.t()
+  def create_webhook_request_events_item_refund_reconciliation_required(), do: "refund.reconciliation_required"
 
   @spec create_webhook_request_events_item_refund_requested() :: String.t()
   def create_webhook_request_events_item_refund_requested(), do: "refund.requested"
@@ -305,8 +608,14 @@ defmodule Raims.EnumValues do
   @spec create_webhook_request_events_item_withdrawal_accepted() :: String.t()
   def create_webhook_request_events_item_withdrawal_accepted(), do: "withdrawal.accepted"
 
+  @spec create_webhook_request_events_item_withdrawal_automatic_settings_changed() :: String.t()
+  def create_webhook_request_events_item_withdrawal_automatic_settings_changed(), do: "withdrawal.automatic_settings_changed"
+
   @spec create_webhook_request_events_item_withdrawal_completed() :: String.t()
   def create_webhook_request_events_item_withdrawal_completed(), do: "withdrawal.completed"
+
+  @spec create_webhook_request_events_item_withdrawal_destination_changed() :: String.t()
+  def create_webhook_request_events_item_withdrawal_destination_changed(), do: "withdrawal.destination_changed"
 
   @spec create_webhook_request_events_item_withdrawal_failed() :: String.t()
   def create_webhook_request_events_item_withdrawal_failed(), do: "withdrawal.failed"
@@ -320,11 +629,89 @@ defmodule Raims.EnumValues do
   @spec customer_created_tax_id_type_cpf() :: String.t()
   def customer_created_tax_id_type_cpf(), do: "cpf"
 
+  @spec customer_created_webhook_event_data_payment_method_boleto() :: String.t()
+  def customer_created_webhook_event_data_payment_method_boleto(), do: "boleto"
+
+  @spec customer_created_webhook_event_data_payment_method_credit_card() :: String.t()
+  def customer_created_webhook_event_data_payment_method_credit_card(), do: "credit_card"
+
+  @spec customer_created_webhook_event_data_payment_method_debit() :: String.t()
+  def customer_created_webhook_event_data_payment_method_debit(), do: "debit"
+
+  @spec customer_created_webhook_event_data_payment_method_pix() :: String.t()
+  def customer_created_webhook_event_data_payment_method_pix(), do: "pix"
+
+  @spec customer_created_webhook_event_environment_production() :: String.t()
+  def customer_created_webhook_event_environment_production(), do: "production"
+
+  @spec customer_created_webhook_event_environment_sandbox() :: String.t()
+  def customer_created_webhook_event_environment_sandbox(), do: "sandbox"
+
+  @spec customer_deleted_webhook_event_data_payment_method_boleto() :: String.t()
+  def customer_deleted_webhook_event_data_payment_method_boleto(), do: "boleto"
+
+  @spec customer_deleted_webhook_event_data_payment_method_credit_card() :: String.t()
+  def customer_deleted_webhook_event_data_payment_method_credit_card(), do: "credit_card"
+
+  @spec customer_deleted_webhook_event_data_payment_method_debit() :: String.t()
+  def customer_deleted_webhook_event_data_payment_method_debit(), do: "debit"
+
+  @spec customer_deleted_webhook_event_data_payment_method_pix() :: String.t()
+  def customer_deleted_webhook_event_data_payment_method_pix(), do: "pix"
+
+  @spec customer_deleted_webhook_event_environment_production() :: String.t()
+  def customer_deleted_webhook_event_environment_production(), do: "production"
+
+  @spec customer_deleted_webhook_event_environment_sandbox() :: String.t()
+  def customer_deleted_webhook_event_environment_sandbox(), do: "sandbox"
+
   @spec customer_list_item_tax_id_type_cnpj() :: String.t()
   def customer_list_item_tax_id_type_cnpj(), do: "cnpj"
 
   @spec customer_list_item_tax_id_type_cpf() :: String.t()
   def customer_list_item_tax_id_type_cpf(), do: "cpf"
+
+  @spec customer_updated_webhook_event_data_payment_method_boleto() :: String.t()
+  def customer_updated_webhook_event_data_payment_method_boleto(), do: "boleto"
+
+  @spec customer_updated_webhook_event_data_payment_method_credit_card() :: String.t()
+  def customer_updated_webhook_event_data_payment_method_credit_card(), do: "credit_card"
+
+  @spec customer_updated_webhook_event_data_payment_method_debit() :: String.t()
+  def customer_updated_webhook_event_data_payment_method_debit(), do: "debit"
+
+  @spec customer_updated_webhook_event_data_payment_method_pix() :: String.t()
+  def customer_updated_webhook_event_data_payment_method_pix(), do: "pix"
+
+  @spec customer_updated_webhook_event_environment_production() :: String.t()
+  def customer_updated_webhook_event_environment_production(), do: "production"
+
+  @spec customer_updated_webhook_event_environment_sandbox() :: String.t()
+  def customer_updated_webhook_event_environment_sandbox(), do: "sandbox"
+
+  @spec dispute_closed_webhook_event_data_payment_method_boleto() :: String.t()
+  def dispute_closed_webhook_event_data_payment_method_boleto(), do: "boleto"
+
+  @spec dispute_closed_webhook_event_data_payment_method_credit_card() :: String.t()
+  def dispute_closed_webhook_event_data_payment_method_credit_card(), do: "credit_card"
+
+  @spec dispute_closed_webhook_event_data_payment_method_debit() :: String.t()
+  def dispute_closed_webhook_event_data_payment_method_debit(), do: "debit"
+
+  @spec dispute_closed_webhook_event_data_payment_method_pix() :: String.t()
+  def dispute_closed_webhook_event_data_payment_method_pix(), do: "pix"
+
+  @spec dispute_funds_debited_webhook_event_data_payment_method_boleto() :: String.t()
+  def dispute_funds_debited_webhook_event_data_payment_method_boleto(), do: "boleto"
+
+  @spec dispute_funds_debited_webhook_event_data_payment_method_credit_card() :: String.t()
+  def dispute_funds_debited_webhook_event_data_payment_method_credit_card(), do: "credit_card"
+
+  @spec dispute_funds_debited_webhook_event_data_payment_method_debit() :: String.t()
+  def dispute_funds_debited_webhook_event_data_payment_method_debit(), do: "debit"
+
+  @spec dispute_funds_debited_webhook_event_data_payment_method_pix() :: String.t()
+  def dispute_funds_debited_webhook_event_data_payment_method_pix(), do: "pix"
 
   @spec dispute_infraction_result_agreed() :: String.t()
   def dispute_infraction_result_agreed(), do: "agreed"
@@ -365,6 +752,18 @@ defmodule Raims.EnumValues do
   @spec dispute_list_item_stage_rejected() :: String.t()
   def dispute_list_item_stage_rejected(), do: "rejected"
 
+  @spec dispute_opened_webhook_event_data_payment_method_boleto() :: String.t()
+  def dispute_opened_webhook_event_data_payment_method_boleto(), do: "boleto"
+
+  @spec dispute_opened_webhook_event_data_payment_method_credit_card() :: String.t()
+  def dispute_opened_webhook_event_data_payment_method_credit_card(), do: "credit_card"
+
+  @spec dispute_opened_webhook_event_data_payment_method_debit() :: String.t()
+  def dispute_opened_webhook_event_data_payment_method_debit(), do: "debit"
+
+  @spec dispute_opened_webhook_event_data_payment_method_pix() :: String.t()
+  def dispute_opened_webhook_event_data_payment_method_pix(), do: "pix"
+
   @spec dispute_refund_result_partially_accepted() :: String.t()
   def dispute_refund_result_partially_accepted(), do: "partially_accepted"
 
@@ -394,6 +793,36 @@ defmodule Raims.EnumValues do
 
   @spec dispute_stage_rejected() :: String.t()
   def dispute_stage_rejected(), do: "rejected"
+
+  @spec dispute_updated_webhook_event_data_payment_method_boleto() :: String.t()
+  def dispute_updated_webhook_event_data_payment_method_boleto(), do: "boleto"
+
+  @spec dispute_updated_webhook_event_data_payment_method_credit_card() :: String.t()
+  def dispute_updated_webhook_event_data_payment_method_credit_card(), do: "credit_card"
+
+  @spec dispute_updated_webhook_event_data_payment_method_debit() :: String.t()
+  def dispute_updated_webhook_event_data_payment_method_debit(), do: "debit"
+
+  @spec dispute_updated_webhook_event_data_payment_method_pix() :: String.t()
+  def dispute_updated_webhook_event_data_payment_method_pix(), do: "pix"
+
+  @spec payment_link_created_webhook_event_data_payment_method_boleto() :: String.t()
+  def payment_link_created_webhook_event_data_payment_method_boleto(), do: "boleto"
+
+  @spec payment_link_created_webhook_event_data_payment_method_credit_card() :: String.t()
+  def payment_link_created_webhook_event_data_payment_method_credit_card(), do: "credit_card"
+
+  @spec payment_link_created_webhook_event_data_payment_method_debit() :: String.t()
+  def payment_link_created_webhook_event_data_payment_method_debit(), do: "debit"
+
+  @spec payment_link_created_webhook_event_data_payment_method_pix() :: String.t()
+  def payment_link_created_webhook_event_data_payment_method_pix(), do: "pix"
+
+  @spec payment_link_created_webhook_event_environment_production() :: String.t()
+  def payment_link_created_webhook_event_environment_production(), do: "production"
+
+  @spec payment_link_created_webhook_event_environment_sandbox() :: String.t()
+  def payment_link_created_webhook_event_environment_sandbox(), do: "sandbox"
 
   @spec payment_link_details_effective_payment_method_types_item_boleto() :: 2
   def payment_link_details_effective_payment_method_types_item_boleto(), do: 2
@@ -434,6 +863,135 @@ defmodule Raims.EnumValues do
   @spec payment_link_unavailable_reason_code_pix_cancelled() :: String.t()
   def payment_link_unavailable_reason_code_pix_cancelled(), do: "PIX_CANCELLED"
 
+  @spec payment_link_updated_webhook_event_data_payment_method_boleto() :: String.t()
+  def payment_link_updated_webhook_event_data_payment_method_boleto(), do: "boleto"
+
+  @spec payment_link_updated_webhook_event_data_payment_method_credit_card() :: String.t()
+  def payment_link_updated_webhook_event_data_payment_method_credit_card(), do: "credit_card"
+
+  @spec payment_link_updated_webhook_event_data_payment_method_debit() :: String.t()
+  def payment_link_updated_webhook_event_data_payment_method_debit(), do: "debit"
+
+  @spec payment_link_updated_webhook_event_data_payment_method_pix() :: String.t()
+  def payment_link_updated_webhook_event_data_payment_method_pix(), do: "pix"
+
+  @spec payment_link_updated_webhook_event_environment_production() :: String.t()
+  def payment_link_updated_webhook_event_environment_production(), do: "production"
+
+  @spec payment_link_updated_webhook_event_environment_sandbox() :: String.t()
+  def payment_link_updated_webhook_event_environment_sandbox(), do: "sandbox"
+
+  @spec pix_available_webhook_event_data_payment_method_boleto() :: String.t()
+  def pix_available_webhook_event_data_payment_method_boleto(), do: "boleto"
+
+  @spec pix_available_webhook_event_data_payment_method_credit_card() :: String.t()
+  def pix_available_webhook_event_data_payment_method_credit_card(), do: "credit_card"
+
+  @spec pix_available_webhook_event_data_payment_method_debit() :: String.t()
+  def pix_available_webhook_event_data_payment_method_debit(), do: "debit"
+
+  @spec pix_available_webhook_event_data_payment_method_pix() :: String.t()
+  def pix_available_webhook_event_data_payment_method_pix(), do: "pix"
+
+  @spec pix_available_webhook_event_environment_production() :: String.t()
+  def pix_available_webhook_event_environment_production(), do: "production"
+
+  @spec pix_available_webhook_event_environment_sandbox() :: String.t()
+  def pix_available_webhook_event_environment_sandbox(), do: "sandbox"
+
+  @spec pix_issuance_failed_webhook_event_data_payment_method_boleto() :: String.t()
+  def pix_issuance_failed_webhook_event_data_payment_method_boleto(), do: "boleto"
+
+  @spec pix_issuance_failed_webhook_event_data_payment_method_credit_card() :: String.t()
+  def pix_issuance_failed_webhook_event_data_payment_method_credit_card(), do: "credit_card"
+
+  @spec pix_issuance_failed_webhook_event_data_payment_method_debit() :: String.t()
+  def pix_issuance_failed_webhook_event_data_payment_method_debit(), do: "debit"
+
+  @spec pix_issuance_failed_webhook_event_data_payment_method_pix() :: String.t()
+  def pix_issuance_failed_webhook_event_data_payment_method_pix(), do: "pix"
+
+  @spec pix_issuance_failed_webhook_event_environment_production() :: String.t()
+  def pix_issuance_failed_webhook_event_environment_production(), do: "production"
+
+  @spec pix_issuance_failed_webhook_event_environment_sandbox() :: String.t()
+  def pix_issuance_failed_webhook_event_environment_sandbox(), do: "sandbox"
+
+  @spec pix_refund_received_webhook_event_data_payment_method_boleto() :: String.t()
+  def pix_refund_received_webhook_event_data_payment_method_boleto(), do: "boleto"
+
+  @spec pix_refund_received_webhook_event_data_payment_method_credit_card() :: String.t()
+  def pix_refund_received_webhook_event_data_payment_method_credit_card(), do: "credit_card"
+
+  @spec pix_refund_received_webhook_event_data_payment_method_debit() :: String.t()
+  def pix_refund_received_webhook_event_data_payment_method_debit(), do: "debit"
+
+  @spec pix_refund_received_webhook_event_data_payment_method_pix() :: String.t()
+  def pix_refund_received_webhook_event_data_payment_method_pix(), do: "pix"
+
+  @spec refund_accepted_webhook_event_data_payment_method_boleto() :: String.t()
+  def refund_accepted_webhook_event_data_payment_method_boleto(), do: "boleto"
+
+  @spec refund_accepted_webhook_event_data_payment_method_credit_card() :: String.t()
+  def refund_accepted_webhook_event_data_payment_method_credit_card(), do: "credit_card"
+
+  @spec refund_accepted_webhook_event_data_payment_method_debit() :: String.t()
+  def refund_accepted_webhook_event_data_payment_method_debit(), do: "debit"
+
+  @spec refund_accepted_webhook_event_data_payment_method_pix() :: String.t()
+  def refund_accepted_webhook_event_data_payment_method_pix(), do: "pix"
+
+  @spec refund_completed_webhook_event_data_payment_method_boleto() :: String.t()
+  def refund_completed_webhook_event_data_payment_method_boleto(), do: "boleto"
+
+  @spec refund_completed_webhook_event_data_payment_method_credit_card() :: String.t()
+  def refund_completed_webhook_event_data_payment_method_credit_card(), do: "credit_card"
+
+  @spec refund_completed_webhook_event_data_payment_method_debit() :: String.t()
+  def refund_completed_webhook_event_data_payment_method_debit(), do: "debit"
+
+  @spec refund_completed_webhook_event_data_payment_method_pix() :: String.t()
+  def refund_completed_webhook_event_data_payment_method_pix(), do: "pix"
+
+  @spec refund_completed_webhook_event_environment_production() :: String.t()
+  def refund_completed_webhook_event_environment_production(), do: "production"
+
+  @spec refund_completed_webhook_event_environment_sandbox() :: String.t()
+  def refund_completed_webhook_event_environment_sandbox(), do: "sandbox"
+
+  @spec refund_failed_webhook_event_data_failure_reason_code_refund_failure_reason_unavailable() :: String.t()
+  def refund_failed_webhook_event_data_failure_reason_code_refund_failure_reason_unavailable(), do: "REFUND_FAILURE_REASON_UNAVAILABLE"
+
+  @spec refund_failed_webhook_event_data_failure_reason_code_refund_not_submitted() :: String.t()
+  def refund_failed_webhook_event_data_failure_reason_code_refund_not_submitted(), do: "REFUND_NOT_SUBMITTED"
+
+  @spec refund_failed_webhook_event_data_failure_reason_code_refund_processing_failed() :: String.t()
+  def refund_failed_webhook_event_data_failure_reason_code_refund_processing_failed(), do: "REFUND_PROCESSING_FAILED"
+
+  @spec refund_failed_webhook_event_data_failure_reason_code_refund_processing_unavailable() :: String.t()
+  def refund_failed_webhook_event_data_failure_reason_code_refund_processing_unavailable(), do: "REFUND_PROCESSING_UNAVAILABLE"
+
+  @spec refund_failed_webhook_event_data_failure_reason_code_refund_rejected() :: String.t()
+  def refund_failed_webhook_event_data_failure_reason_code_refund_rejected(), do: "REFUND_REJECTED"
+
+  @spec refund_failed_webhook_event_data_payment_method_boleto() :: String.t()
+  def refund_failed_webhook_event_data_payment_method_boleto(), do: "boleto"
+
+  @spec refund_failed_webhook_event_data_payment_method_credit_card() :: String.t()
+  def refund_failed_webhook_event_data_payment_method_credit_card(), do: "credit_card"
+
+  @spec refund_failed_webhook_event_data_payment_method_debit() :: String.t()
+  def refund_failed_webhook_event_data_payment_method_debit(), do: "debit"
+
+  @spec refund_failed_webhook_event_data_payment_method_pix() :: String.t()
+  def refund_failed_webhook_event_data_payment_method_pix(), do: "pix"
+
+  @spec refund_failed_webhook_event_environment_production() :: String.t()
+  def refund_failed_webhook_event_environment_production(), do: "production"
+
+  @spec refund_failed_webhook_event_environment_sandbox() :: String.t()
+  def refund_failed_webhook_event_environment_sandbox(), do: "sandbox"
+
   @spec refund_failure_reason_code_refund_failure_reason_unavailable() :: String.t()
   def refund_failure_reason_code_refund_failure_reason_unavailable(), do: "REFUND_FAILURE_REASON_UNAVAILABLE"
 
@@ -448,6 +1006,36 @@ defmodule Raims.EnumValues do
 
   @spec refund_failure_reason_code_refund_rejected() :: String.t()
   def refund_failure_reason_code_refund_rejected(), do: "REFUND_REJECTED"
+
+  @spec refund_reconciliation_required_webhook_event_data_payment_method_boleto() :: String.t()
+  def refund_reconciliation_required_webhook_event_data_payment_method_boleto(), do: "boleto"
+
+  @spec refund_reconciliation_required_webhook_event_data_payment_method_credit_card() :: String.t()
+  def refund_reconciliation_required_webhook_event_data_payment_method_credit_card(), do: "credit_card"
+
+  @spec refund_reconciliation_required_webhook_event_data_payment_method_debit() :: String.t()
+  def refund_reconciliation_required_webhook_event_data_payment_method_debit(), do: "debit"
+
+  @spec refund_reconciliation_required_webhook_event_data_payment_method_pix() :: String.t()
+  def refund_reconciliation_required_webhook_event_data_payment_method_pix(), do: "pix"
+
+  @spec refund_requested_webhook_event_data_payment_method_boleto() :: String.t()
+  def refund_requested_webhook_event_data_payment_method_boleto(), do: "boleto"
+
+  @spec refund_requested_webhook_event_data_payment_method_credit_card() :: String.t()
+  def refund_requested_webhook_event_data_payment_method_credit_card(), do: "credit_card"
+
+  @spec refund_requested_webhook_event_data_payment_method_debit() :: String.t()
+  def refund_requested_webhook_event_data_payment_method_debit(), do: "debit"
+
+  @spec refund_requested_webhook_event_data_payment_method_pix() :: String.t()
+  def refund_requested_webhook_event_data_payment_method_pix(), do: "pix"
+
+  @spec refund_requested_webhook_event_environment_production() :: String.t()
+  def refund_requested_webhook_event_environment_production(), do: "production"
+
+  @spec refund_requested_webhook_event_environment_sandbox() :: String.t()
+  def refund_requested_webhook_event_environment_sandbox(), do: "sandbox"
 
   @spec refund_status_accepted() :: String.t()
   def refund_status_accepted(), do: "accepted"
@@ -500,6 +1088,24 @@ defmodule Raims.EnumValues do
   @spec resolve_charge_scenario_request_outcome_failed() :: String.t()
   def resolve_charge_scenario_request_outcome_failed(), do: "failed"
 
+  @spec statement_created_webhook_event_data_payment_method_boleto() :: String.t()
+  def statement_created_webhook_event_data_payment_method_boleto(), do: "boleto"
+
+  @spec statement_created_webhook_event_data_payment_method_credit_card() :: String.t()
+  def statement_created_webhook_event_data_payment_method_credit_card(), do: "credit_card"
+
+  @spec statement_created_webhook_event_data_payment_method_debit() :: String.t()
+  def statement_created_webhook_event_data_payment_method_debit(), do: "debit"
+
+  @spec statement_created_webhook_event_data_payment_method_pix() :: String.t()
+  def statement_created_webhook_event_data_payment_method_pix(), do: "pix"
+
+  @spec statement_created_webhook_event_environment_production() :: String.t()
+  def statement_created_webhook_event_environment_production(), do: "production"
+
+  @spec statement_created_webhook_event_environment_sandbox() :: String.t()
+  def statement_created_webhook_event_environment_sandbox(), do: "sandbox"
+
   @spec statement_reference_type_ajuste() :: 4
   def statement_reference_type_ajuste(), do: 4
 
@@ -548,6 +1154,18 @@ defmodule Raims.EnumValues do
   @spec statement_statement_type_tarifa_de_servi_o() :: 3
   def statement_statement_type_tarifa_de_servi_o(), do: 3
 
+  @spec ted_received_webhook_event_data_payment_method_boleto() :: String.t()
+  def ted_received_webhook_event_data_payment_method_boleto(), do: "boleto"
+
+  @spec ted_received_webhook_event_data_payment_method_credit_card() :: String.t()
+  def ted_received_webhook_event_data_payment_method_credit_card(), do: "credit_card"
+
+  @spec ted_received_webhook_event_data_payment_method_debit() :: String.t()
+  def ted_received_webhook_event_data_payment_method_debit(), do: "debit"
+
+  @spec ted_received_webhook_event_data_payment_method_pix() :: String.t()
+  def ted_received_webhook_event_data_payment_method_pix(), do: "pix"
+
   @spec update_payment_link_request_payment_method_types_item_boleto() :: 2
   def update_payment_link_request_payment_method_types_item_boleto(), do: 2
 
@@ -559,6 +1177,21 @@ defmodule Raims.EnumValues do
 
   @spec webhook_created_disabled_reason_manual() :: String.t()
   def webhook_created_disabled_reason_manual(), do: "manual"
+
+  @spec webhook_delivery_status_canceled() :: String.t()
+  def webhook_delivery_status_canceled(), do: "canceled"
+
+  @spec webhook_delivery_status_delivered() :: String.t()
+  def webhook_delivery_status_delivered(), do: "delivered"
+
+  @spec webhook_delivery_status_failed() :: String.t()
+  def webhook_delivery_status_failed(), do: "failed"
+
+  @spec webhook_delivery_status_pending() :: String.t()
+  def webhook_delivery_status_pending(), do: "pending"
+
+  @spec webhook_delivery_status_processing() :: String.t()
+  def webhook_delivery_status_processing(), do: "processing"
 
   @spec webhook_disabled_reason_continuous_failure() :: String.t()
   def webhook_disabled_reason_continuous_failure(), do: "continuous_failure"
@@ -575,14 +1208,14 @@ defmodule Raims.EnumValues do
   @spec webhook_event_type_code_balance_hold_released() :: String.t()
   def webhook_event_type_code_balance_hold_released(), do: "balance.hold.released"
 
-  @spec webhook_event_type_code_boleto_available() :: String.t()
-  def webhook_event_type_code_boleto_available(), do: "boleto.available"
-
   @spec webhook_event_type_code_boleto_compensated() :: String.t()
   def webhook_event_type_code_boleto_compensated(), do: "boleto.compensated"
 
-  @spec webhook_event_type_code_boleto_issuance_failed() :: String.t()
-  def webhook_event_type_code_boleto_issuance_failed(), do: "boleto.issuance_failed"
+  @spec webhook_event_type_code_boleto_overpayment_received() :: String.t()
+  def webhook_event_type_code_boleto_overpayment_received(), do: "boleto.overpayment_received"
+
+  @spec webhook_event_type_code_boleto_partial_settlement_detected() :: String.t()
+  def webhook_event_type_code_boleto_partial_settlement_detected(), do: "boleto.partial_settlement_detected"
 
   @spec webhook_event_type_code_charge_canceled() :: String.t()
   def webhook_event_type_code_charge_canceled(), do: "charge.canceled"
@@ -601,6 +1234,15 @@ defmodule Raims.EnumValues do
 
   @spec webhook_event_type_code_charge_paid() :: String.t()
   def webhook_event_type_code_charge_paid(), do: "charge.paid"
+
+  @spec webhook_event_type_code_charge_partially_refunded() :: String.t()
+  def webhook_event_type_code_charge_partially_refunded(), do: "charge.partially_refunded"
+
+  @spec webhook_event_type_code_charge_payment_instructions_available() :: String.t()
+  def webhook_event_type_code_charge_payment_instructions_available(), do: "charge.payment_instructions_available"
+
+  @spec webhook_event_type_code_charge_payment_instructions_failed() :: String.t()
+  def webhook_event_type_code_charge_payment_instructions_failed(), do: "charge.payment_instructions_failed"
 
   @spec webhook_event_type_code_charge_updated() :: String.t()
   def webhook_event_type_code_charge_updated(), do: "charge.updated"
@@ -632,12 +1274,6 @@ defmodule Raims.EnumValues do
   @spec webhook_event_type_code_payment_link_updated() :: String.t()
   def webhook_event_type_code_payment_link_updated(), do: "payment_link.updated"
 
-  @spec webhook_event_type_code_pix_available() :: String.t()
-  def webhook_event_type_code_pix_available(), do: "pix.available"
-
-  @spec webhook_event_type_code_pix_issuance_failed() :: String.t()
-  def webhook_event_type_code_pix_issuance_failed(), do: "pix.issuance_failed"
-
   @spec webhook_event_type_code_pix_refund_received() :: String.t()
   def webhook_event_type_code_pix_refund_received(), do: "pix_refund.received"
 
@@ -649,6 +1285,9 @@ defmodule Raims.EnumValues do
 
   @spec webhook_event_type_code_refund_failed() :: String.t()
   def webhook_event_type_code_refund_failed(), do: "refund.failed"
+
+  @spec webhook_event_type_code_refund_reconciliation_required() :: String.t()
+  def webhook_event_type_code_refund_reconciliation_required(), do: "refund.reconciliation_required"
 
   @spec webhook_event_type_code_refund_requested() :: String.t()
   def webhook_event_type_code_refund_requested(), do: "refund.requested"
@@ -662,8 +1301,14 @@ defmodule Raims.EnumValues do
   @spec webhook_event_type_code_withdrawal_accepted() :: String.t()
   def webhook_event_type_code_withdrawal_accepted(), do: "withdrawal.accepted"
 
+  @spec webhook_event_type_code_withdrawal_automatic_settings_changed() :: String.t()
+  def webhook_event_type_code_withdrawal_automatic_settings_changed(), do: "withdrawal.automatic_settings_changed"
+
   @spec webhook_event_type_code_withdrawal_completed() :: String.t()
   def webhook_event_type_code_withdrawal_completed(), do: "withdrawal.completed"
+
+  @spec webhook_event_type_code_withdrawal_destination_changed() :: String.t()
+  def webhook_event_type_code_withdrawal_destination_changed(), do: "withdrawal.destination_changed"
 
   @spec webhook_event_type_code_withdrawal_failed() :: String.t()
   def webhook_event_type_code_withdrawal_failed(), do: "withdrawal.failed"
@@ -683,6 +1328,60 @@ defmodule Raims.EnumValues do
   @spec webhook_health_status_unknown() :: String.t()
   def webhook_health_status_unknown(), do: "unknown"
 
+  @spec webhook_test_webhook_event_environment_production() :: String.t()
+  def webhook_test_webhook_event_environment_production(), do: "production"
+
+  @spec webhook_test_webhook_event_environment_sandbox() :: String.t()
+  def webhook_test_webhook_event_environment_sandbox(), do: "sandbox"
+
+  @spec withdrawal_accepted_webhook_event_data_payment_method_boleto() :: String.t()
+  def withdrawal_accepted_webhook_event_data_payment_method_boleto(), do: "boleto"
+
+  @spec withdrawal_accepted_webhook_event_data_payment_method_credit_card() :: String.t()
+  def withdrawal_accepted_webhook_event_data_payment_method_credit_card(), do: "credit_card"
+
+  @spec withdrawal_accepted_webhook_event_data_payment_method_debit() :: String.t()
+  def withdrawal_accepted_webhook_event_data_payment_method_debit(), do: "debit"
+
+  @spec withdrawal_accepted_webhook_event_data_payment_method_pix() :: String.t()
+  def withdrawal_accepted_webhook_event_data_payment_method_pix(), do: "pix"
+
+  @spec withdrawal_automatic_settings_changed_webhook_event_data_payment_method_boleto() :: String.t()
+  def withdrawal_automatic_settings_changed_webhook_event_data_payment_method_boleto(), do: "boleto"
+
+  @spec withdrawal_automatic_settings_changed_webhook_event_data_payment_method_credit_card() :: String.t()
+  def withdrawal_automatic_settings_changed_webhook_event_data_payment_method_credit_card(), do: "credit_card"
+
+  @spec withdrawal_automatic_settings_changed_webhook_event_data_payment_method_debit() :: String.t()
+  def withdrawal_automatic_settings_changed_webhook_event_data_payment_method_debit(), do: "debit"
+
+  @spec withdrawal_automatic_settings_changed_webhook_event_data_payment_method_pix() :: String.t()
+  def withdrawal_automatic_settings_changed_webhook_event_data_payment_method_pix(), do: "pix"
+
+  @spec withdrawal_completed_webhook_event_data_payment_method_boleto() :: String.t()
+  def withdrawal_completed_webhook_event_data_payment_method_boleto(), do: "boleto"
+
+  @spec withdrawal_completed_webhook_event_data_payment_method_credit_card() :: String.t()
+  def withdrawal_completed_webhook_event_data_payment_method_credit_card(), do: "credit_card"
+
+  @spec withdrawal_completed_webhook_event_data_payment_method_debit() :: String.t()
+  def withdrawal_completed_webhook_event_data_payment_method_debit(), do: "debit"
+
+  @spec withdrawal_completed_webhook_event_data_payment_method_pix() :: String.t()
+  def withdrawal_completed_webhook_event_data_payment_method_pix(), do: "pix"
+
+  @spec withdrawal_destination_changed_webhook_event_data_payment_method_boleto() :: String.t()
+  def withdrawal_destination_changed_webhook_event_data_payment_method_boleto(), do: "boleto"
+
+  @spec withdrawal_destination_changed_webhook_event_data_payment_method_credit_card() :: String.t()
+  def withdrawal_destination_changed_webhook_event_data_payment_method_credit_card(), do: "credit_card"
+
+  @spec withdrawal_destination_changed_webhook_event_data_payment_method_debit() :: String.t()
+  def withdrawal_destination_changed_webhook_event_data_payment_method_debit(), do: "debit"
+
+  @spec withdrawal_destination_changed_webhook_event_data_payment_method_pix() :: String.t()
+  def withdrawal_destination_changed_webhook_event_data_payment_method_pix(), do: "pix"
+
   @spec withdrawal_destination_key_type_cnpj() :: String.t()
   def withdrawal_destination_key_type_cnpj(), do: "CNPJ"
 
@@ -694,6 +1393,18 @@ defmodule Raims.EnumValues do
 
   @spec withdrawal_destination_key_type_phone() :: String.t()
   def withdrawal_destination_key_type_phone(), do: "PHONE"
+
+  @spec withdrawal_failed_webhook_event_data_payment_method_boleto() :: String.t()
+  def withdrawal_failed_webhook_event_data_payment_method_boleto(), do: "boleto"
+
+  @spec withdrawal_failed_webhook_event_data_payment_method_credit_card() :: String.t()
+  def withdrawal_failed_webhook_event_data_payment_method_credit_card(), do: "credit_card"
+
+  @spec withdrawal_failed_webhook_event_data_payment_method_debit() :: String.t()
+  def withdrawal_failed_webhook_event_data_payment_method_debit(), do: "debit"
+
+  @spec withdrawal_failed_webhook_event_data_payment_method_pix() :: String.t()
+  def withdrawal_failed_webhook_event_data_payment_method_pix(), do: "pix"
 
   @spec withdrawal_failure_reason_code_above_maximum_withdrawal() :: String.t()
   def withdrawal_failure_reason_code_above_maximum_withdrawal(), do: "ABOVE_MAXIMUM_WITHDRAWAL"
@@ -755,6 +1466,18 @@ defmodule Raims.EnumValues do
   @spec withdrawal_pix_destination_key_type_phone() :: String.t()
   def withdrawal_pix_destination_key_type_phone(), do: "PHONE"
 
+  @spec withdrawal_requested_webhook_event_data_payment_method_boleto() :: String.t()
+  def withdrawal_requested_webhook_event_data_payment_method_boleto(), do: "boleto"
+
+  @spec withdrawal_requested_webhook_event_data_payment_method_credit_card() :: String.t()
+  def withdrawal_requested_webhook_event_data_payment_method_credit_card(), do: "credit_card"
+
+  @spec withdrawal_requested_webhook_event_data_payment_method_debit() :: String.t()
+  def withdrawal_requested_webhook_event_data_payment_method_debit(), do: "debit"
+
+  @spec withdrawal_requested_webhook_event_data_payment_method_pix() :: String.t()
+  def withdrawal_requested_webhook_event_data_payment_method_pix(), do: "pix"
+
   @spec withdrawal_status_canceled() :: String.t()
   def withdrawal_status_canceled(), do: "CANCELED"
 
@@ -772,4 +1495,36 @@ defmodule Raims.EnumValues do
 
   @spec withdrawal_status_unknown() :: String.t()
   def withdrawal_status_unknown(), do: "UNKNOWN"
+
+  @deprecated "Historical webhook event code"
+  @spec create_webhook_request_events_item_boleto_available() :: String.t()
+  def create_webhook_request_events_item_boleto_available(), do: "boleto.available"
+
+  @deprecated "Historical webhook event code"
+  @spec create_webhook_request_events_item_boleto_issuance_failed() :: String.t()
+  def create_webhook_request_events_item_boleto_issuance_failed(), do: "boleto.issuance_failed"
+
+  @deprecated "Historical webhook event code"
+  @spec create_webhook_request_events_item_pix_available() :: String.t()
+  def create_webhook_request_events_item_pix_available(), do: "pix.available"
+
+  @deprecated "Historical webhook event code"
+  @spec create_webhook_request_events_item_pix_issuance_failed() :: String.t()
+  def create_webhook_request_events_item_pix_issuance_failed(), do: "pix.issuance_failed"
+
+  @deprecated "Historical webhook event code"
+  @spec webhook_event_type_code_boleto_available() :: String.t()
+  def webhook_event_type_code_boleto_available(), do: "boleto.available"
+
+  @deprecated "Historical webhook event code"
+  @spec webhook_event_type_code_boleto_issuance_failed() :: String.t()
+  def webhook_event_type_code_boleto_issuance_failed(), do: "boleto.issuance_failed"
+
+  @deprecated "Historical webhook event code"
+  @spec webhook_event_type_code_pix_available() :: String.t()
+  def webhook_event_type_code_pix_available(), do: "pix.available"
+
+  @deprecated "Historical webhook event code"
+  @spec webhook_event_type_code_pix_issuance_failed() :: String.t()
+  def webhook_event_type_code_pix_issuance_failed(), do: "pix.issuance_failed"
 end

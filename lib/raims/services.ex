@@ -512,6 +512,134 @@ defmodule Raims.Statements do
   end
 end
 
+defmodule Raims.WebhookDeliveries do
+  @moduledoc "Operations for webhook deliveries."
+
+  @doc "List webhook deliveries."
+  @spec list(Raims.Client.t(), map(), keyword()) :: {:ok, Raims.Response.t()} | {:error, Raims.Error.t()}
+  def list(client, params \\ %{}, opts \\ []) do
+    Raims.Client.request(client, "ListWebhookDeliveries", %{}, params, opts)
+  end
+
+  @doc "Same as list, raising Raims.Error on an API or transport failure."
+  @spec list!(Raims.Client.t(), map(), keyword()) :: Raims.Response.t()
+  def list!(client, params \\ %{}, opts \\ []) do
+    list(client, params, opts) |> Raims.Client.unwrap!()
+  end
+
+  @doc "Retrieve a delivery."
+  @spec retrieve(Raims.Client.t(), String.t(), map(), keyword()) :: {:ok, Raims.Response.t()} | {:error, Raims.Error.t()}
+  def retrieve(client, delivery_id, params \\ %{}, opts \\ []) do
+    Raims.Client.request(client, "GetWebhookDelivery", %{"delivery_id" => delivery_id}, params, opts)
+  end
+
+  @doc "Same as retrieve, raising Raims.Error on an API or transport failure."
+  @spec retrieve!(Raims.Client.t(), String.t(), map(), keyword()) :: Raims.Response.t()
+  def retrieve!(client, delivery_id, params \\ %{}, opts \\ []) do
+    retrieve(client, delivery_id, params, opts) |> Raims.Client.unwrap!()
+  end
+
+  @doc "List the attempts for a delivery."
+  @spec list_attempts(Raims.Client.t(), String.t(), map(), keyword()) :: {:ok, Raims.Response.t()} | {:error, Raims.Error.t()}
+  def list_attempts(client, delivery_id, params \\ %{}, opts \\ []) do
+    Raims.Client.request(client, "ListWebhookDeliveryAttempts", %{"delivery_id" => delivery_id}, params, opts)
+  end
+
+  @doc "Same as list_attempts, raising Raims.Error on an API or transport failure."
+  @spec list_attempts!(Raims.Client.t(), String.t(), map(), keyword()) :: Raims.Response.t()
+  def list_attempts!(client, delivery_id, params \\ %{}, opts \\ []) do
+    list_attempts(client, delivery_id, params, opts) |> Raims.Client.unwrap!()
+  end
+
+  @doc "Retrieve an attempt."
+  @spec retrieve_attempt(Raims.Client.t(), String.t(), String.t(), map(), keyword()) :: {:ok, Raims.Response.t()} | {:error, Raims.Error.t()}
+  def retrieve_attempt(client, delivery_id, attempt_id, params \\ %{}, opts \\ []) do
+    Raims.Client.request(client, "GetWebhookDeliveryAttempt", %{"delivery_id" => delivery_id, "attempt_id" => attempt_id}, params, opts)
+  end
+
+  @doc "Same as retrieve_attempt, raising Raims.Error on an API or transport failure."
+  @spec retrieve_attempt!(Raims.Client.t(), String.t(), String.t(), map(), keyword()) :: Raims.Response.t()
+  def retrieve_attempt!(client, delivery_id, attempt_id, params \\ %{}, opts \\ []) do
+    retrieve_attempt(client, delivery_id, attempt_id, params, opts) |> Raims.Client.unwrap!()
+  end
+
+  @doc "Resend an event."
+  @spec resend(Raims.Client.t(), String.t(), map(), keyword()) :: {:ok, Raims.Response.t()} | {:error, Raims.Error.t()}
+  def resend(client, delivery_id, params \\ %{}, opts \\ []) do
+    Raims.Client.request(client, "ResendWebhookDelivery", %{"delivery_id" => delivery_id}, params, opts)
+  end
+
+  @doc "Same as resend, raising Raims.Error on an API or transport failure."
+  @spec resend!(Raims.Client.t(), String.t(), map(), keyword()) :: Raims.Response.t()
+  def resend!(client, delivery_id, params \\ %{}, opts \\ []) do
+    resend(client, delivery_id, params, opts) |> Raims.Client.unwrap!()
+  end
+
+  @doc "Resend multiple deliveries."
+  @spec resend_many(Raims.Client.t(), map(), keyword()) :: {:ok, Raims.Response.t()} | {:error, Raims.Error.t()}
+  def resend_many(client, params \\ %{}, opts \\ []) do
+    Raims.Client.request(client, "ResendWebhookDeliveries", %{}, params, opts)
+  end
+
+  @doc "Same as resend_many, raising Raims.Error on an API or transport failure."
+  @spec resend_many!(Raims.Client.t(), map(), keyword()) :: Raims.Response.t()
+  def resend_many!(client, params \\ %{}, opts \\ []) do
+    resend_many(client, params, opts) |> Raims.Client.unwrap!()
+  end
+
+  @doc "Advance the next attempt."
+  @spec advance(Raims.Client.t(), String.t(), map(), keyword()) :: {:ok, Raims.Response.t()} | {:error, Raims.Error.t()}
+  def advance(client, delivery_id, params \\ %{}, opts \\ []) do
+    Raims.Client.request(client, "AdvanceWebhookDelivery", %{"delivery_id" => delivery_id}, params, opts)
+  end
+
+  @doc "Same as advance, raising Raims.Error on an API or transport failure."
+  @spec advance!(Raims.Client.t(), String.t(), map(), keyword()) :: Raims.Response.t()
+  def advance!(client, delivery_id, params \\ %{}, opts \\ []) do
+    advance(client, delivery_id, params, opts) |> Raims.Client.unwrap!()
+  end
+end
+
+defmodule Raims.WebhookEvents do
+  @moduledoc "Operations for webhook events."
+
+  @doc "List webhook events."
+  @spec list(Raims.Client.t(), map(), keyword()) :: {:ok, Raims.Response.t()} | {:error, Raims.Error.t()}
+  def list(client, params \\ %{}, opts \\ []) do
+    Raims.Client.request(client, "ListWebhookEvents", %{}, params, opts)
+  end
+
+  @doc "Same as list, raising Raims.Error on an API or transport failure."
+  @spec list!(Raims.Client.t(), map(), keyword()) :: Raims.Response.t()
+  def list!(client, params \\ %{}, opts \\ []) do
+    list(client, params, opts) |> Raims.Client.unwrap!()
+  end
+
+  @doc "Retrieve a webhook event."
+  @spec retrieve(Raims.Client.t(), String.t(), map(), keyword()) :: {:ok, Raims.Response.t()} | {:error, Raims.Error.t()}
+  def retrieve(client, event_id, params \\ %{}, opts \\ []) do
+    Raims.Client.request(client, "GetWebhookEvent", %{"event_id" => event_id}, params, opts)
+  end
+
+  @doc "Same as retrieve, raising Raims.Error on an API or transport failure."
+  @spec retrieve!(Raims.Client.t(), String.t(), map(), keyword()) :: Raims.Response.t()
+  def retrieve!(client, event_id, params \\ %{}, opts \\ []) do
+    retrieve(client, event_id, params, opts) |> Raims.Client.unwrap!()
+  end
+
+  @doc "Send an event to a webhook."
+  @spec deliver(Raims.Client.t(), String.t(), map(), keyword()) :: {:ok, Raims.Response.t()} | {:error, Raims.Error.t()}
+  def deliver(client, event_id, params \\ %{}, opts \\ []) do
+    Raims.Client.request(client, "DeliverWebhookEvent", %{"event_id" => event_id}, params, opts)
+  end
+
+  @doc "Same as deliver, raising Raims.Error on an API or transport failure."
+  @spec deliver!(Raims.Client.t(), String.t(), map(), keyword()) :: Raims.Response.t()
+  def deliver!(client, event_id, params \\ %{}, opts \\ []) do
+    deliver(client, event_id, params, opts) |> Raims.Client.unwrap!()
+  end
+end
+
 defmodule Raims.WebhookEventTypes do
   @moduledoc "Operations for webhook event types."
 

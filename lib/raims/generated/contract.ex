@@ -16,6 +16,7 @@ defmodule Raims.Contract do
   def model("Charge"), do: Raims.Models.Charge
   def model("ChargeBoletoCompensation"), do: Raims.Models.ChargeBoletoCompensation
   def model("ChargeBoletoPaymentInformation"), do: Raims.Models.ChargeBoletoPaymentInformation
+  def model("ChargeBoletoSettlement"), do: Raims.Models.ChargeBoletoSettlement
   def model("ChargeCreated"), do: Raims.Models.ChargeCreated
   def model("ChargeListItem"), do: Raims.Models.ChargeListItem
   def model("ChargeListPage"), do: Raims.Models.ChargeListPage
@@ -64,7 +65,20 @@ defmodule Raims.Contract do
   def model("StatementListPage"), do: Raims.Models.StatementListPage
   def model("StatementListResponse"), do: Raims.Models.StatementListResponse
   def model("Webhook"), do: Raims.Models.Webhook
+  def model("WebhookAdvanceAccepted"), do: Raims.Models.WebhookAdvanceAccepted
+  def model("WebhookAttempt"), do: Raims.Models.WebhookAttempt
+  def model("WebhookAttemptDetail"), do: Raims.Models.WebhookAttemptDetail
+  def model("WebhookAttemptListResponse"), do: Raims.Models.WebhookAttemptListResponse
+  def model("WebhookBulkResendAccepted"), do: Raims.Models.WebhookBulkResendAccepted
+  def model("WebhookBulkResendItem"), do: Raims.Models.WebhookBulkResendItem
   def model("WebhookCreated"), do: Raims.Models.WebhookCreated
+  def model("WebhookDelivery"), do: Raims.Models.WebhookDelivery
+  def model("WebhookDeliveryListResponse"), do: Raims.Models.WebhookDeliveryListResponse
+  def model("WebhookDeliveryPage"), do: Raims.Models.WebhookDeliveryPage
+  def model("WebhookDeliveryResendAccepted"), do: Raims.Models.WebhookDeliveryResendAccepted
+  def model("WebhookEvent"), do: Raims.Models.WebhookEvent
+  def model("WebhookEventDetail"), do: Raims.Models.WebhookEventDetail
+  def model("WebhookEventListResponse"), do: Raims.Models.WebhookEventListResponse
   def model("WebhookEventType"), do: Raims.Models.WebhookEventType
   def model("WebhookEventTypeListResponse"), do: Raims.Models.WebhookEventTypeListResponse
   def model("WebhookHealth"), do: Raims.Models.WebhookHealth

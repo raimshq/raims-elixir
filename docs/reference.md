@@ -52,6 +52,16 @@ Read fields with `response.data["field"]` or the generated model getters.
 | `Raims.Refunds.retrieve_receipt` | `GET /v1/refunds/{id}/receipt` | - | `Raims.Models.FinancialDocument.t()` |
 | `Raims.Statements.list` | `GET /v1/statements` | [`ListStatementsParams`](#liststatementsparams) | `Raims.Models.StatementListResponse.t()` |
 | `Raims.Statements.retrieve` | `GET /v1/statements/{id}` | - | `Raims.Models.Statement.t()` |
+| `Raims.WebhookDeliveries.list` | `GET /v1/webhook_deliveries` | [`ListWebhookDeliveriesParams`](#listwebhookdeliveriesparams) | `Raims.Models.WebhookDeliveryListResponse.t()` |
+| `Raims.WebhookDeliveries.retrieve` | `GET /v1/webhook_deliveries/{delivery_id}` | - | `Raims.Models.WebhookDelivery.t()` |
+| `Raims.WebhookDeliveries.list_attempts` | `GET /v1/webhook_deliveries/{delivery_id}/attempts` | [`ListWebhookDeliveryAttemptsParams`](#listwebhookdeliveryattemptsparams) | `Raims.Models.WebhookAttemptListResponse.t()` |
+| `Raims.WebhookDeliveries.retrieve_attempt` | `GET /v1/webhook_deliveries/{delivery_id}/attempts/{attempt_id}` | - | `Raims.Models.WebhookAttemptDetail.t()` |
+| `Raims.WebhookDeliveries.resend` | `POST /v1/webhook_deliveries/{delivery_id}/resend` | - | `Raims.Models.WebhookDeliveryResendAccepted.t()` |
+| `Raims.WebhookDeliveries.resend_many` | `POST /v1/webhook_deliveries/resend` | [`ResendWebhookDeliveriesParams`](#resendwebhookdeliveriesparams) | `Raims.Models.WebhookBulkResendAccepted.t()` |
+| `Raims.WebhookDeliveries.advance` | `POST /v1/webhook_deliveries/{delivery_id}/advance` | - | `Raims.Models.WebhookAdvanceAccepted.t()` |
+| `Raims.WebhookEvents.list` | `GET /v1/webhook_events` | [`ListWebhookEventsParams`](#listwebhookeventsparams) | `Raims.Models.WebhookEventListResponse.t()` |
+| `Raims.WebhookEvents.retrieve` | `GET /v1/webhook_events/{event_id}` | - | `Raims.Models.WebhookEventDetail.t()` |
+| `Raims.WebhookEvents.deliver` | `POST /v1/webhook_events/{event_id}/deliveries` | [`DeliverWebhookEventParams`](#deliverwebhookeventparams) | `Raims.Models.WebhookDeliveryResendAccepted.t()` |
 | `Raims.WebhookEventTypes.list` | `GET /v1/webhook_event_types` | - | `Raims.Models.WebhookEventTypeListResponse.t()` |
 | `Raims.Webhooks.create` | `POST /v1/webhooks` | [`CreateWebhookParams`](#createwebhookparams) | `Raims.Models.WebhookCreated.t()` |
 | `Raims.Webhooks.list` | `GET /v1/webhooks` | [`ListWebhooksParams`](#listwebhooksparams) | `Raims.Models.WebhookListResponse.t()` |
@@ -405,6 +415,62 @@ Retrieve statements.
 | `created_lte` | `integer()` | No | Inclusive end of the period, in Unix seconds UTC. The supplied instant is the exact boundary; fractions later than the supplied second are outside the period. |
 | `sort_order` | `String.t()` | No | Entry order by date: desc shows the newest first; asc shows the oldest first. |
 
+### ResendWebhookDeliveriesParams
+
+Resend multiple deliveries.
+
+| Field | Elixir value | Required | Description |
+| --- | --- | --- | --- |
+| `delivery_ids` | `[String.t()]` | Yes | Delivery IDs from the webhook history. Duplicate IDs or deliveries for the same event and destination produce one resend. The result appears at each corresponding position. |
+
+### ListWebhookDeliveriesParams
+
+List webhook deliveries.
+
+| Field | Elixir value | Required | Description |
+| --- | --- | --- | --- |
+| `page_size` | `integer()` | No | Records per page. The response reports the effective size in page.page_size. |
+| `after` | `String.t()` | No | To move forward, copy page.next_after from the previous response. Use only after or before. |
+| `before` | `String.t()` | No | To move backward, copy page.previous_before from the previous response. Use only after or before. |
+| `webhook_id` | `String.t()` | No | Filters deliveries for a destination, including deleted webhooks whose delivery history is still available. |
+| `event_type` | `String.t()` | No | Filters by the code of the event received by the webhook. |
+| `event_id` | `String.t()` | No | Filters deliveries by event ID, including original deliveries and resends for that event. Keep this value when following a cursor. |
+| `status` | `String.t()` | No | Filters by the current delivery status. |
+| `created_gte` | `integer()` | No | Includes deliveries created at or after this instant in Unix seconds UTC. The filter uses the delivery creation time. |
+| `created_lte` | `integer()` | No | Includes deliveries created at or before this instant in Unix seconds UTC. The filter uses the delivery creation time. |
+
+### ListWebhookDeliveryAttemptsParams
+
+List the attempts for a delivery.
+
+| Field | Elixir value | Required | Description |
+| --- | --- | --- | --- |
+| `page_size` | `integer()` | No | Records per page. The response reports the effective size in page.page_size. |
+| `after` | `String.t()` | No | To move forward, copy page.next_after from the previous response. Use only after or before. |
+| `before` | `String.t()` | No | To move backward, copy page.previous_before from the previous response. Use only after or before. |
+
+### DeliverWebhookEventParams
+
+Send an event to a webhook.
+
+| Field | Elixir value | Required | Description |
+| --- | --- | --- | --- |
+| `webhook_id` | `String.t()` | Yes | ID of the active webhook used to select the event type. Use a webhook from the same company and environment as the API key. |
+
+### ListWebhookEventsParams
+
+List webhook events.
+
+| Field | Elixir value | Required | Description |
+| --- | --- | --- | --- |
+| `page_size` | `integer()` | No | Number of events per page. The response indicates whether another page exists and provides its cursor. |
+| `after` | `String.t()` | No | Cursor from `page.next_after` for the next page of the same query. Keep the filters from the first page. |
+| `before` | `String.t()` | No | Cursor from `page.previous_before` for the previous page of the same query. Keep the filters from the first page. |
+| `event_type` | `String.t()` | No | Filters by event name, such as `charge.paid`. |
+| `resource_id` | `String.t()` | No | Filters by the public identifier in `data.id` in the event body. |
+| `created_gte` | `integer()` | No | Includes events created at or after this instant in Unix seconds UTC. |
+| `created_lte` | `integer()` | No | Includes events created at or before this instant in Unix seconds UTC. This value must be greater than or equal to `created_gte` when provided. |
+
 ### SetWebhookPauseParams
 
 Pause or resume deliveries.
@@ -502,16 +568,97 @@ values receive names only when the contract publishes explicit labels.
 | `Raims.EnumValues.account_context_data_environment_production()` | `"production"` |
 | `Raims.EnumValues.account_context_data_environment_sandbox()` | `"sandbox"` |
 | `Raims.EnumValues.account_context_timestamp_unit_unix_seconds()` | `"unix_seconds"` |
+| `Raims.EnumValues.account_restored_webhook_event_data_payment_method_boleto()` | `"boleto"` |
+| `Raims.EnumValues.account_restored_webhook_event_data_payment_method_credit_card()` | `"credit_card"` |
+| `Raims.EnumValues.account_restored_webhook_event_data_payment_method_debit()` | `"debit"` |
+| `Raims.EnumValues.account_restored_webhook_event_data_payment_method_pix()` | `"pix"` |
 | `Raims.EnumValues.balance_forecast_period_last_15_days()` | `"last_15_days"` |
 | `Raims.EnumValues.balance_forecast_period_last_30_days()` | `"last_30_days"` |
 | `Raims.EnumValues.balance_forecast_period_last_7_days()` | `"last_7_days"` |
 | `Raims.EnumValues.balance_forecast_period_today()` | `"today"` |
+| `Raims.EnumValues.balance_hold_created_webhook_event_data_payment_method_boleto()` | `"boleto"` |
+| `Raims.EnumValues.balance_hold_created_webhook_event_data_payment_method_credit_card()` | `"credit_card"` |
+| `Raims.EnumValues.balance_hold_created_webhook_event_data_payment_method_debit()` | `"debit"` |
+| `Raims.EnumValues.balance_hold_created_webhook_event_data_payment_method_pix()` | `"pix"` |
+| `Raims.EnumValues.balance_hold_released_webhook_event_data_payment_method_boleto()` | `"boleto"` |
+| `Raims.EnumValues.balance_hold_released_webhook_event_data_payment_method_credit_card()` | `"credit_card"` |
+| `Raims.EnumValues.balance_hold_released_webhook_event_data_payment_method_debit()` | `"debit"` |
+| `Raims.EnumValues.balance_hold_released_webhook_event_data_payment_method_pix()` | `"pix"` |
+| `Raims.EnumValues.boleto_available_webhook_event_data_payment_method_boleto()` | `"boleto"` |
+| `Raims.EnumValues.boleto_available_webhook_event_data_payment_method_credit_card()` | `"credit_card"` |
+| `Raims.EnumValues.boleto_available_webhook_event_data_payment_method_debit()` | `"debit"` |
+| `Raims.EnumValues.boleto_available_webhook_event_data_payment_method_pix()` | `"pix"` |
+| `Raims.EnumValues.boleto_available_webhook_event_environment_production()` | `"production"` |
+| `Raims.EnumValues.boleto_available_webhook_event_environment_sandbox()` | `"sandbox"` |
+| `Raims.EnumValues.boleto_compensated_webhook_event_data_payment_method_boleto()` | `"boleto"` |
+| `Raims.EnumValues.boleto_compensated_webhook_event_data_payment_method_credit_card()` | `"credit_card"` |
+| `Raims.EnumValues.boleto_compensated_webhook_event_data_payment_method_debit()` | `"debit"` |
+| `Raims.EnumValues.boleto_compensated_webhook_event_data_payment_method_pix()` | `"pix"` |
+| `Raims.EnumValues.boleto_compensated_webhook_event_environment_production()` | `"production"` |
+| `Raims.EnumValues.boleto_compensated_webhook_event_environment_sandbox()` | `"sandbox"` |
+| `Raims.EnumValues.boleto_issuance_failed_webhook_event_data_payment_method_boleto()` | `"boleto"` |
+| `Raims.EnumValues.boleto_issuance_failed_webhook_event_data_payment_method_credit_card()` | `"credit_card"` |
+| `Raims.EnumValues.boleto_issuance_failed_webhook_event_data_payment_method_debit()` | `"debit"` |
+| `Raims.EnumValues.boleto_issuance_failed_webhook_event_data_payment_method_pix()` | `"pix"` |
+| `Raims.EnumValues.boleto_issuance_failed_webhook_event_environment_production()` | `"production"` |
+| `Raims.EnumValues.boleto_issuance_failed_webhook_event_environment_sandbox()` | `"sandbox"` |
+| `Raims.EnumValues.boleto_overpayment_received_webhook_event_data_payment_method_boleto()` | `"boleto"` |
+| `Raims.EnumValues.boleto_overpayment_received_webhook_event_data_payment_method_credit_card()` | `"credit_card"` |
+| `Raims.EnumValues.boleto_overpayment_received_webhook_event_data_payment_method_debit()` | `"debit"` |
+| `Raims.EnumValues.boleto_overpayment_received_webhook_event_data_payment_method_pix()` | `"pix"` |
+| `Raims.EnumValues.boleto_partial_settlement_detected_webhook_event_data_payment_method_boleto()` | `"boleto"` |
+| `Raims.EnumValues.boleto_partial_settlement_detected_webhook_event_data_payment_method_credit_card()` | `"credit_card"` |
+| `Raims.EnumValues.boleto_partial_settlement_detected_webhook_event_data_payment_method_debit()` | `"debit"` |
+| `Raims.EnumValues.boleto_partial_settlement_detected_webhook_event_data_payment_method_pix()` | `"pix"` |
+| `Raims.EnumValues.charge_canceled_webhook_event_data_payment_method_boleto()` | `"boleto"` |
+| `Raims.EnumValues.charge_canceled_webhook_event_data_payment_method_credit_card()` | `"credit_card"` |
+| `Raims.EnumValues.charge_canceled_webhook_event_data_payment_method_debit()` | `"debit"` |
+| `Raims.EnumValues.charge_canceled_webhook_event_data_payment_method_pix()` | `"pix"` |
+| `Raims.EnumValues.charge_canceled_webhook_event_environment_production()` | `"production"` |
+| `Raims.EnumValues.charge_canceled_webhook_event_environment_sandbox()` | `"sandbox"` |
 | `Raims.EnumValues.charge_created_payment_method_types_item_boleto()` | `2` |
 | `Raims.EnumValues.charge_created_payment_method_types_item_pix()` | `1` |
+| `Raims.EnumValues.charge_created_webhook_event_data_payment_method_boleto()` | `"boleto"` |
+| `Raims.EnumValues.charge_created_webhook_event_data_payment_method_credit_card()` | `"credit_card"` |
+| `Raims.EnumValues.charge_created_webhook_event_data_payment_method_debit()` | `"debit"` |
+| `Raims.EnumValues.charge_created_webhook_event_data_payment_method_pix()` | `"pix"` |
+| `Raims.EnumValues.charge_created_webhook_event_environment_production()` | `"production"` |
+| `Raims.EnumValues.charge_created_webhook_event_environment_sandbox()` | `"sandbox"` |
+| `Raims.EnumValues.charge_expired_webhook_event_data_payment_method_boleto()` | `"boleto"` |
+| `Raims.EnumValues.charge_expired_webhook_event_data_payment_method_credit_card()` | `"credit_card"` |
+| `Raims.EnumValues.charge_expired_webhook_event_data_payment_method_debit()` | `"debit"` |
+| `Raims.EnumValues.charge_expired_webhook_event_data_payment_method_pix()` | `"pix"` |
+| `Raims.EnumValues.charge_expired_webhook_event_environment_production()` | `"production"` |
+| `Raims.EnumValues.charge_expired_webhook_event_environment_sandbox()` | `"sandbox"` |
+| `Raims.EnumValues.charge_failed_webhook_event_data_payment_method_boleto()` | `"boleto"` |
+| `Raims.EnumValues.charge_failed_webhook_event_data_payment_method_credit_card()` | `"credit_card"` |
+| `Raims.EnumValues.charge_failed_webhook_event_data_payment_method_debit()` | `"debit"` |
+| `Raims.EnumValues.charge_failed_webhook_event_data_payment_method_pix()` | `"pix"` |
+| `Raims.EnumValues.charge_failed_webhook_event_environment_production()` | `"production"` |
+| `Raims.EnumValues.charge_failed_webhook_event_environment_sandbox()` | `"sandbox"` |
+| `Raims.EnumValues.charge_fully_refunded_webhook_event_data_payment_method_boleto()` | `"boleto"` |
+| `Raims.EnumValues.charge_fully_refunded_webhook_event_data_payment_method_credit_card()` | `"credit_card"` |
+| `Raims.EnumValues.charge_fully_refunded_webhook_event_data_payment_method_debit()` | `"debit"` |
+| `Raims.EnumValues.charge_fully_refunded_webhook_event_data_payment_method_pix()` | `"pix"` |
+| `Raims.EnumValues.charge_fully_refunded_webhook_event_environment_production()` | `"production"` |
+| `Raims.EnumValues.charge_fully_refunded_webhook_event_environment_sandbox()` | `"sandbox"` |
 | `Raims.EnumValues.charge_list_item_payment_method_types_item_boleto()` | `2` |
 | `Raims.EnumValues.charge_list_item_payment_method_types_item_pix()` | `1` |
+| `Raims.EnumValues.charge_paid_webhook_event_data_payment_method_boleto()` | `"boleto"` |
+| `Raims.EnumValues.charge_paid_webhook_event_data_payment_method_credit_card()` | `"credit_card"` |
+| `Raims.EnumValues.charge_paid_webhook_event_data_payment_method_debit()` | `"debit"` |
+| `Raims.EnumValues.charge_paid_webhook_event_data_payment_method_pix()` | `"pix"` |
+| `Raims.EnumValues.charge_paid_webhook_event_environment_production()` | `"production"` |
+| `Raims.EnumValues.charge_paid_webhook_event_environment_sandbox()` | `"sandbox"` |
+| `Raims.EnumValues.charge_partially_refunded_webhook_event_data_payment_method_boleto()` | `"boleto"` |
+| `Raims.EnumValues.charge_partially_refunded_webhook_event_data_payment_method_credit_card()` | `"credit_card"` |
+| `Raims.EnumValues.charge_partially_refunded_webhook_event_data_payment_method_debit()` | `"debit"` |
+| `Raims.EnumValues.charge_partially_refunded_webhook_event_data_payment_method_pix()` | `"pix"` |
+| `Raims.EnumValues.charge_partially_refunded_webhook_event_environment_production()` | `"production"` |
+| `Raims.EnumValues.charge_partially_refunded_webhook_event_environment_sandbox()` | `"sandbox"` |
 | `Raims.EnumValues.charge_payment_information_boleto_payment_status_awaiting_payment()` | `"awaiting_payment"` |
 | `Raims.EnumValues.charge_payment_information_boleto_payment_status_compensated()` | `"compensated"` |
+| `Raims.EnumValues.charge_payment_information_boleto_payment_status_partially_settled()` | `"partially_settled"` |
 | `Raims.EnumValues.charge_payment_information_boleto_payment_status_settled()` | `"settled"` |
 | `Raims.EnumValues.charge_payment_information_boleto_status_available()` | `"available"` |
 | `Raims.EnumValues.charge_payment_information_boleto_status_failed()` | `"failed"` |
@@ -521,6 +668,18 @@ values receive names only when the contract publishes explicit labels.
 | `Raims.EnumValues.charge_payment_information_pix_status_failed()` | `"failed"` |
 | `Raims.EnumValues.charge_payment_information_pix_status_not_generated()` | `"not_generated"` |
 | `Raims.EnumValues.charge_payment_information_pix_status_pending()` | `"pending"` |
+| `Raims.EnumValues.charge_payment_instructions_available_webhook_event_data_payment_method_boleto()` | `"boleto"` |
+| `Raims.EnumValues.charge_payment_instructions_available_webhook_event_data_payment_method_credit_card()` | `"credit_card"` |
+| `Raims.EnumValues.charge_payment_instructions_available_webhook_event_data_payment_method_debit()` | `"debit"` |
+| `Raims.EnumValues.charge_payment_instructions_available_webhook_event_data_payment_method_pix()` | `"pix"` |
+| `Raims.EnumValues.charge_payment_instructions_available_webhook_event_environment_production()` | `"production"` |
+| `Raims.EnumValues.charge_payment_instructions_available_webhook_event_environment_sandbox()` | `"sandbox"` |
+| `Raims.EnumValues.charge_payment_instructions_failed_webhook_event_data_payment_method_boleto()` | `"boleto"` |
+| `Raims.EnumValues.charge_payment_instructions_failed_webhook_event_data_payment_method_credit_card()` | `"credit_card"` |
+| `Raims.EnumValues.charge_payment_instructions_failed_webhook_event_data_payment_method_debit()` | `"debit"` |
+| `Raims.EnumValues.charge_payment_instructions_failed_webhook_event_data_payment_method_pix()` | `"pix"` |
+| `Raims.EnumValues.charge_payment_instructions_failed_webhook_event_environment_production()` | `"production"` |
+| `Raims.EnumValues.charge_payment_instructions_failed_webhook_event_environment_sandbox()` | `"sandbox"` |
 | `Raims.EnumValues.charge_payment_method_types_item_boleto()` | `2` |
 | `Raims.EnumValues.charge_payment_method_types_item_pix()` | `1` |
 | `Raims.EnumValues.charge_scenario_action_boleto_issuance()` | `"boleto_issuance"` |
@@ -542,6 +701,12 @@ values receive names only when the contract publishes explicit labels.
 | `Raims.EnumValues.charge_statistics_period_last_30_days()` | `"last_30_days"` |
 | `Raims.EnumValues.charge_statistics_period_last_7_days()` | `"last_7_days"` |
 | `Raims.EnumValues.charge_statistics_period_today()` | `"today"` |
+| `Raims.EnumValues.charge_updated_webhook_event_data_payment_method_boleto()` | `"boleto"` |
+| `Raims.EnumValues.charge_updated_webhook_event_data_payment_method_credit_card()` | `"credit_card"` |
+| `Raims.EnumValues.charge_updated_webhook_event_data_payment_method_debit()` | `"debit"` |
+| `Raims.EnumValues.charge_updated_webhook_event_data_payment_method_pix()` | `"pix"` |
+| `Raims.EnumValues.charge_updated_webhook_event_environment_production()` | `"production"` |
+| `Raims.EnumValues.charge_updated_webhook_event_environment_sandbox()` | `"sandbox"` |
 | `Raims.EnumValues.checkout_asset_error_code_checkout_asset_invalid_image()` | `"CHECKOUT_ASSET_INVALID_IMAGE"` |
 | `Raims.EnumValues.checkout_asset_error_code_checkout_asset_processing_failed()` | `"CHECKOUT_ASSET_PROCESSING_FAILED"` |
 | `Raims.EnumValues.checkout_asset_error_code_checkout_asset_upload_not_found()` | `"CHECKOUT_ASSET_UPLOAD_NOT_FOUND"` |
@@ -565,15 +730,18 @@ values receive names only when the contract publishes explicit labels.
 | `Raims.EnumValues.create_webhook_request_events_item_account_restored()` | `"account.restored"` |
 | `Raims.EnumValues.create_webhook_request_events_item_balance_hold_created()` | `"balance.hold.created"` |
 | `Raims.EnumValues.create_webhook_request_events_item_balance_hold_released()` | `"balance.hold.released"` |
-| `Raims.EnumValues.create_webhook_request_events_item_boleto_available()` | `"boleto.available"` |
 | `Raims.EnumValues.create_webhook_request_events_item_boleto_compensated()` | `"boleto.compensated"` |
-| `Raims.EnumValues.create_webhook_request_events_item_boleto_issuance_failed()` | `"boleto.issuance_failed"` |
+| `Raims.EnumValues.create_webhook_request_events_item_boleto_overpayment_received()` | `"boleto.overpayment_received"` |
+| `Raims.EnumValues.create_webhook_request_events_item_boleto_partial_settlement_detected()` | `"boleto.partial_settlement_detected"` |
 | `Raims.EnumValues.create_webhook_request_events_item_charge_canceled()` | `"charge.canceled"` |
 | `Raims.EnumValues.create_webhook_request_events_item_charge_created()` | `"charge.created"` |
 | `Raims.EnumValues.create_webhook_request_events_item_charge_expired()` | `"charge.expired"` |
 | `Raims.EnumValues.create_webhook_request_events_item_charge_failed()` | `"charge.failed"` |
 | `Raims.EnumValues.create_webhook_request_events_item_charge_fully_refunded()` | `"charge.fully_refunded"` |
 | `Raims.EnumValues.create_webhook_request_events_item_charge_paid()` | `"charge.paid"` |
+| `Raims.EnumValues.create_webhook_request_events_item_charge_partially_refunded()` | `"charge.partially_refunded"` |
+| `Raims.EnumValues.create_webhook_request_events_item_charge_payment_instructions_available()` | `"charge.payment_instructions_available"` |
+| `Raims.EnumValues.create_webhook_request_events_item_charge_payment_instructions_failed()` | `"charge.payment_instructions_failed"` |
 | `Raims.EnumValues.create_webhook_request_events_item_charge_updated()` | `"charge.updated"` |
 | `Raims.EnumValues.create_webhook_request_events_item_customer_created()` | `"customer.created"` |
 | `Raims.EnumValues.create_webhook_request_events_item_customer_deleted()` | `"customer.deleted"` |
@@ -584,23 +752,50 @@ values receive names only when the contract publishes explicit labels.
 | `Raims.EnumValues.create_webhook_request_events_item_dispute_updated()` | `"dispute.updated"` |
 | `Raims.EnumValues.create_webhook_request_events_item_payment_link_created()` | `"payment_link.created"` |
 | `Raims.EnumValues.create_webhook_request_events_item_payment_link_updated()` | `"payment_link.updated"` |
-| `Raims.EnumValues.create_webhook_request_events_item_pix_available()` | `"pix.available"` |
-| `Raims.EnumValues.create_webhook_request_events_item_pix_issuance_failed()` | `"pix.issuance_failed"` |
 | `Raims.EnumValues.create_webhook_request_events_item_pix_refund_received()` | `"pix_refund.received"` |
 | `Raims.EnumValues.create_webhook_request_events_item_refund_accepted()` | `"refund.accepted"` |
 | `Raims.EnumValues.create_webhook_request_events_item_refund_completed()` | `"refund.completed"` |
 | `Raims.EnumValues.create_webhook_request_events_item_refund_failed()` | `"refund.failed"` |
+| `Raims.EnumValues.create_webhook_request_events_item_refund_reconciliation_required()` | `"refund.reconciliation_required"` |
 | `Raims.EnumValues.create_webhook_request_events_item_refund_requested()` | `"refund.requested"` |
 | `Raims.EnumValues.create_webhook_request_events_item_statement_created()` | `"statement.created"` |
 | `Raims.EnumValues.create_webhook_request_events_item_ted_received()` | `"ted.received"` |
 | `Raims.EnumValues.create_webhook_request_events_item_withdrawal_accepted()` | `"withdrawal.accepted"` |
+| `Raims.EnumValues.create_webhook_request_events_item_withdrawal_automatic_settings_changed()` | `"withdrawal.automatic_settings_changed"` |
 | `Raims.EnumValues.create_webhook_request_events_item_withdrawal_completed()` | `"withdrawal.completed"` |
+| `Raims.EnumValues.create_webhook_request_events_item_withdrawal_destination_changed()` | `"withdrawal.destination_changed"` |
 | `Raims.EnumValues.create_webhook_request_events_item_withdrawal_failed()` | `"withdrawal.failed"` |
 | `Raims.EnumValues.create_webhook_request_events_item_withdrawal_requested()` | `"withdrawal.requested"` |
 | `Raims.EnumValues.customer_created_tax_id_type_cnpj()` | `"cnpj"` |
 | `Raims.EnumValues.customer_created_tax_id_type_cpf()` | `"cpf"` |
+| `Raims.EnumValues.customer_created_webhook_event_data_payment_method_boleto()` | `"boleto"` |
+| `Raims.EnumValues.customer_created_webhook_event_data_payment_method_credit_card()` | `"credit_card"` |
+| `Raims.EnumValues.customer_created_webhook_event_data_payment_method_debit()` | `"debit"` |
+| `Raims.EnumValues.customer_created_webhook_event_data_payment_method_pix()` | `"pix"` |
+| `Raims.EnumValues.customer_created_webhook_event_environment_production()` | `"production"` |
+| `Raims.EnumValues.customer_created_webhook_event_environment_sandbox()` | `"sandbox"` |
+| `Raims.EnumValues.customer_deleted_webhook_event_data_payment_method_boleto()` | `"boleto"` |
+| `Raims.EnumValues.customer_deleted_webhook_event_data_payment_method_credit_card()` | `"credit_card"` |
+| `Raims.EnumValues.customer_deleted_webhook_event_data_payment_method_debit()` | `"debit"` |
+| `Raims.EnumValues.customer_deleted_webhook_event_data_payment_method_pix()` | `"pix"` |
+| `Raims.EnumValues.customer_deleted_webhook_event_environment_production()` | `"production"` |
+| `Raims.EnumValues.customer_deleted_webhook_event_environment_sandbox()` | `"sandbox"` |
 | `Raims.EnumValues.customer_list_item_tax_id_type_cnpj()` | `"cnpj"` |
 | `Raims.EnumValues.customer_list_item_tax_id_type_cpf()` | `"cpf"` |
+| `Raims.EnumValues.customer_updated_webhook_event_data_payment_method_boleto()` | `"boleto"` |
+| `Raims.EnumValues.customer_updated_webhook_event_data_payment_method_credit_card()` | `"credit_card"` |
+| `Raims.EnumValues.customer_updated_webhook_event_data_payment_method_debit()` | `"debit"` |
+| `Raims.EnumValues.customer_updated_webhook_event_data_payment_method_pix()` | `"pix"` |
+| `Raims.EnumValues.customer_updated_webhook_event_environment_production()` | `"production"` |
+| `Raims.EnumValues.customer_updated_webhook_event_environment_sandbox()` | `"sandbox"` |
+| `Raims.EnumValues.dispute_closed_webhook_event_data_payment_method_boleto()` | `"boleto"` |
+| `Raims.EnumValues.dispute_closed_webhook_event_data_payment_method_credit_card()` | `"credit_card"` |
+| `Raims.EnumValues.dispute_closed_webhook_event_data_payment_method_debit()` | `"debit"` |
+| `Raims.EnumValues.dispute_closed_webhook_event_data_payment_method_pix()` | `"pix"` |
+| `Raims.EnumValues.dispute_funds_debited_webhook_event_data_payment_method_boleto()` | `"boleto"` |
+| `Raims.EnumValues.dispute_funds_debited_webhook_event_data_payment_method_credit_card()` | `"credit_card"` |
+| `Raims.EnumValues.dispute_funds_debited_webhook_event_data_payment_method_debit()` | `"debit"` |
+| `Raims.EnumValues.dispute_funds_debited_webhook_event_data_payment_method_pix()` | `"pix"` |
 | `Raims.EnumValues.dispute_infraction_result_agreed()` | `"agreed"` |
 | `Raims.EnumValues.dispute_infraction_result_disagreed()` | `"disagreed"` |
 | `Raims.EnumValues.dispute_kind_chargeback()` | `"chargeback"` |
@@ -614,6 +809,10 @@ values receive names only when the contract publishes explicit labels.
 | `Raims.EnumValues.dispute_list_item_stage_open()` | `"open"` |
 | `Raims.EnumValues.dispute_list_item_stage_refund_in_analysis()` | `"refund_in_analysis"` |
 | `Raims.EnumValues.dispute_list_item_stage_rejected()` | `"rejected"` |
+| `Raims.EnumValues.dispute_opened_webhook_event_data_payment_method_boleto()` | `"boleto"` |
+| `Raims.EnumValues.dispute_opened_webhook_event_data_payment_method_credit_card()` | `"credit_card"` |
+| `Raims.EnumValues.dispute_opened_webhook_event_data_payment_method_debit()` | `"debit"` |
+| `Raims.EnumValues.dispute_opened_webhook_event_data_payment_method_pix()` | `"pix"` |
 | `Raims.EnumValues.dispute_refund_result_partially_accepted()` | `"partially_accepted"` |
 | `Raims.EnumValues.dispute_refund_result_rejected()` | `"rejected"` |
 | `Raims.EnumValues.dispute_refund_result_totally_accepted()` | `"totally_accepted"` |
@@ -624,6 +823,16 @@ values receive names only when the contract publishes explicit labels.
 | `Raims.EnumValues.dispute_stage_open()` | `"open"` |
 | `Raims.EnumValues.dispute_stage_refund_in_analysis()` | `"refund_in_analysis"` |
 | `Raims.EnumValues.dispute_stage_rejected()` | `"rejected"` |
+| `Raims.EnumValues.dispute_updated_webhook_event_data_payment_method_boleto()` | `"boleto"` |
+| `Raims.EnumValues.dispute_updated_webhook_event_data_payment_method_credit_card()` | `"credit_card"` |
+| `Raims.EnumValues.dispute_updated_webhook_event_data_payment_method_debit()` | `"debit"` |
+| `Raims.EnumValues.dispute_updated_webhook_event_data_payment_method_pix()` | `"pix"` |
+| `Raims.EnumValues.payment_link_created_webhook_event_data_payment_method_boleto()` | `"boleto"` |
+| `Raims.EnumValues.payment_link_created_webhook_event_data_payment_method_credit_card()` | `"credit_card"` |
+| `Raims.EnumValues.payment_link_created_webhook_event_data_payment_method_debit()` | `"debit"` |
+| `Raims.EnumValues.payment_link_created_webhook_event_data_payment_method_pix()` | `"pix"` |
+| `Raims.EnumValues.payment_link_created_webhook_event_environment_production()` | `"production"` |
+| `Raims.EnumValues.payment_link_created_webhook_event_environment_sandbox()` | `"sandbox"` |
 | `Raims.EnumValues.payment_link_details_effective_payment_method_types_item_boleto()` | `2` |
 | `Raims.EnumValues.payment_link_details_effective_payment_method_types_item_pix()` | `1` |
 | `Raims.EnumValues.payment_link_details_payment_method_types_item_boleto()` | `2` |
@@ -637,11 +846,64 @@ values receive names only when the contract publishes explicit labels.
 | `Raims.EnumValues.payment_link_unavailable_reason_code_payment_methods_unavailable()` | `"PAYMENT_METHODS_UNAVAILABLE"` |
 | `Raims.EnumValues.payment_link_unavailable_reason_code_pix_cancellation_pending()` | `"PIX_CANCELLATION_PENDING"` |
 | `Raims.EnumValues.payment_link_unavailable_reason_code_pix_cancelled()` | `"PIX_CANCELLED"` |
+| `Raims.EnumValues.payment_link_updated_webhook_event_data_payment_method_boleto()` | `"boleto"` |
+| `Raims.EnumValues.payment_link_updated_webhook_event_data_payment_method_credit_card()` | `"credit_card"` |
+| `Raims.EnumValues.payment_link_updated_webhook_event_data_payment_method_debit()` | `"debit"` |
+| `Raims.EnumValues.payment_link_updated_webhook_event_data_payment_method_pix()` | `"pix"` |
+| `Raims.EnumValues.payment_link_updated_webhook_event_environment_production()` | `"production"` |
+| `Raims.EnumValues.payment_link_updated_webhook_event_environment_sandbox()` | `"sandbox"` |
+| `Raims.EnumValues.pix_available_webhook_event_data_payment_method_boleto()` | `"boleto"` |
+| `Raims.EnumValues.pix_available_webhook_event_data_payment_method_credit_card()` | `"credit_card"` |
+| `Raims.EnumValues.pix_available_webhook_event_data_payment_method_debit()` | `"debit"` |
+| `Raims.EnumValues.pix_available_webhook_event_data_payment_method_pix()` | `"pix"` |
+| `Raims.EnumValues.pix_available_webhook_event_environment_production()` | `"production"` |
+| `Raims.EnumValues.pix_available_webhook_event_environment_sandbox()` | `"sandbox"` |
+| `Raims.EnumValues.pix_issuance_failed_webhook_event_data_payment_method_boleto()` | `"boleto"` |
+| `Raims.EnumValues.pix_issuance_failed_webhook_event_data_payment_method_credit_card()` | `"credit_card"` |
+| `Raims.EnumValues.pix_issuance_failed_webhook_event_data_payment_method_debit()` | `"debit"` |
+| `Raims.EnumValues.pix_issuance_failed_webhook_event_data_payment_method_pix()` | `"pix"` |
+| `Raims.EnumValues.pix_issuance_failed_webhook_event_environment_production()` | `"production"` |
+| `Raims.EnumValues.pix_issuance_failed_webhook_event_environment_sandbox()` | `"sandbox"` |
+| `Raims.EnumValues.pix_refund_received_webhook_event_data_payment_method_boleto()` | `"boleto"` |
+| `Raims.EnumValues.pix_refund_received_webhook_event_data_payment_method_credit_card()` | `"credit_card"` |
+| `Raims.EnumValues.pix_refund_received_webhook_event_data_payment_method_debit()` | `"debit"` |
+| `Raims.EnumValues.pix_refund_received_webhook_event_data_payment_method_pix()` | `"pix"` |
+| `Raims.EnumValues.refund_accepted_webhook_event_data_payment_method_boleto()` | `"boleto"` |
+| `Raims.EnumValues.refund_accepted_webhook_event_data_payment_method_credit_card()` | `"credit_card"` |
+| `Raims.EnumValues.refund_accepted_webhook_event_data_payment_method_debit()` | `"debit"` |
+| `Raims.EnumValues.refund_accepted_webhook_event_data_payment_method_pix()` | `"pix"` |
+| `Raims.EnumValues.refund_completed_webhook_event_data_payment_method_boleto()` | `"boleto"` |
+| `Raims.EnumValues.refund_completed_webhook_event_data_payment_method_credit_card()` | `"credit_card"` |
+| `Raims.EnumValues.refund_completed_webhook_event_data_payment_method_debit()` | `"debit"` |
+| `Raims.EnumValues.refund_completed_webhook_event_data_payment_method_pix()` | `"pix"` |
+| `Raims.EnumValues.refund_completed_webhook_event_environment_production()` | `"production"` |
+| `Raims.EnumValues.refund_completed_webhook_event_environment_sandbox()` | `"sandbox"` |
+| `Raims.EnumValues.refund_failed_webhook_event_data_failure_reason_code_refund_failure_reason_unavailable()` | `"REFUND_FAILURE_REASON_UNAVAILABLE"` |
+| `Raims.EnumValues.refund_failed_webhook_event_data_failure_reason_code_refund_not_submitted()` | `"REFUND_NOT_SUBMITTED"` |
+| `Raims.EnumValues.refund_failed_webhook_event_data_failure_reason_code_refund_processing_failed()` | `"REFUND_PROCESSING_FAILED"` |
+| `Raims.EnumValues.refund_failed_webhook_event_data_failure_reason_code_refund_processing_unavailable()` | `"REFUND_PROCESSING_UNAVAILABLE"` |
+| `Raims.EnumValues.refund_failed_webhook_event_data_failure_reason_code_refund_rejected()` | `"REFUND_REJECTED"` |
+| `Raims.EnumValues.refund_failed_webhook_event_data_payment_method_boleto()` | `"boleto"` |
+| `Raims.EnumValues.refund_failed_webhook_event_data_payment_method_credit_card()` | `"credit_card"` |
+| `Raims.EnumValues.refund_failed_webhook_event_data_payment_method_debit()` | `"debit"` |
+| `Raims.EnumValues.refund_failed_webhook_event_data_payment_method_pix()` | `"pix"` |
+| `Raims.EnumValues.refund_failed_webhook_event_environment_production()` | `"production"` |
+| `Raims.EnumValues.refund_failed_webhook_event_environment_sandbox()` | `"sandbox"` |
 | `Raims.EnumValues.refund_failure_reason_code_refund_failure_reason_unavailable()` | `"REFUND_FAILURE_REASON_UNAVAILABLE"` |
 | `Raims.EnumValues.refund_failure_reason_code_refund_not_submitted()` | `"REFUND_NOT_SUBMITTED"` |
 | `Raims.EnumValues.refund_failure_reason_code_refund_processing_failed()` | `"REFUND_PROCESSING_FAILED"` |
 | `Raims.EnumValues.refund_failure_reason_code_refund_processing_unavailable()` | `"REFUND_PROCESSING_UNAVAILABLE"` |
 | `Raims.EnumValues.refund_failure_reason_code_refund_rejected()` | `"REFUND_REJECTED"` |
+| `Raims.EnumValues.refund_reconciliation_required_webhook_event_data_payment_method_boleto()` | `"boleto"` |
+| `Raims.EnumValues.refund_reconciliation_required_webhook_event_data_payment_method_credit_card()` | `"credit_card"` |
+| `Raims.EnumValues.refund_reconciliation_required_webhook_event_data_payment_method_debit()` | `"debit"` |
+| `Raims.EnumValues.refund_reconciliation_required_webhook_event_data_payment_method_pix()` | `"pix"` |
+| `Raims.EnumValues.refund_requested_webhook_event_data_payment_method_boleto()` | `"boleto"` |
+| `Raims.EnumValues.refund_requested_webhook_event_data_payment_method_credit_card()` | `"credit_card"` |
+| `Raims.EnumValues.refund_requested_webhook_event_data_payment_method_debit()` | `"debit"` |
+| `Raims.EnumValues.refund_requested_webhook_event_data_payment_method_pix()` | `"pix"` |
+| `Raims.EnumValues.refund_requested_webhook_event_environment_production()` | `"production"` |
+| `Raims.EnumValues.refund_requested_webhook_event_environment_sandbox()` | `"sandbox"` |
 | `Raims.EnumValues.refund_status_accepted()` | `"accepted"` |
 | `Raims.EnumValues.refund_status_completed()` | `"completed"` |
 | `Raims.EnumValues.refund_status_failed()` | `"failed"` |
@@ -659,6 +921,12 @@ values receive names only when the contract publishes explicit labels.
 | `Raims.EnumValues.resolve_charge_scenario_request_action_pix_issuance()` | `"pix_issuance"` |
 | `Raims.EnumValues.resolve_charge_scenario_request_outcome_completed()` | `"completed"` |
 | `Raims.EnumValues.resolve_charge_scenario_request_outcome_failed()` | `"failed"` |
+| `Raims.EnumValues.statement_created_webhook_event_data_payment_method_boleto()` | `"boleto"` |
+| `Raims.EnumValues.statement_created_webhook_event_data_payment_method_credit_card()` | `"credit_card"` |
+| `Raims.EnumValues.statement_created_webhook_event_data_payment_method_debit()` | `"debit"` |
+| `Raims.EnumValues.statement_created_webhook_event_data_payment_method_pix()` | `"pix"` |
+| `Raims.EnumValues.statement_created_webhook_event_environment_production()` | `"production"` |
+| `Raims.EnumValues.statement_created_webhook_event_environment_sandbox()` | `"sandbox"` |
 | `Raims.EnumValues.statement_reference_type_ajuste()` | `4` |
 | `Raims.EnumValues.statement_reference_type_cobran_a()` | `1` |
 | `Raims.EnumValues.statement_reference_type_contesta_o()` | `2` |
@@ -675,24 +943,36 @@ values receive names only when the contract publishes explicit labels.
 | `Raims.EnumValues.statement_statement_type_saque()` | `4` |
 | `Raims.EnumValues.statement_statement_type_tarifa()` | `2` |
 | `Raims.EnumValues.statement_statement_type_tarifa_de_servi_o()` | `3` |
+| `Raims.EnumValues.ted_received_webhook_event_data_payment_method_boleto()` | `"boleto"` |
+| `Raims.EnumValues.ted_received_webhook_event_data_payment_method_credit_card()` | `"credit_card"` |
+| `Raims.EnumValues.ted_received_webhook_event_data_payment_method_debit()` | `"debit"` |
+| `Raims.EnumValues.ted_received_webhook_event_data_payment_method_pix()` | `"pix"` |
 | `Raims.EnumValues.update_payment_link_request_payment_method_types_item_boleto()` | `2` |
 | `Raims.EnumValues.update_payment_link_request_payment_method_types_item_pix()` | `1` |
 | `Raims.EnumValues.webhook_created_disabled_reason_continuous_failure()` | `"continuous_failure"` |
 | `Raims.EnumValues.webhook_created_disabled_reason_manual()` | `"manual"` |
+| `Raims.EnumValues.webhook_delivery_status_canceled()` | `"canceled"` |
+| `Raims.EnumValues.webhook_delivery_status_delivered()` | `"delivered"` |
+| `Raims.EnumValues.webhook_delivery_status_failed()` | `"failed"` |
+| `Raims.EnumValues.webhook_delivery_status_pending()` | `"pending"` |
+| `Raims.EnumValues.webhook_delivery_status_processing()` | `"processing"` |
 | `Raims.EnumValues.webhook_disabled_reason_continuous_failure()` | `"continuous_failure"` |
 | `Raims.EnumValues.webhook_disabled_reason_manual()` | `"manual"` |
 | `Raims.EnumValues.webhook_event_type_code_account_restored()` | `"account.restored"` |
 | `Raims.EnumValues.webhook_event_type_code_balance_hold_created()` | `"balance.hold.created"` |
 | `Raims.EnumValues.webhook_event_type_code_balance_hold_released()` | `"balance.hold.released"` |
-| `Raims.EnumValues.webhook_event_type_code_boleto_available()` | `"boleto.available"` |
 | `Raims.EnumValues.webhook_event_type_code_boleto_compensated()` | `"boleto.compensated"` |
-| `Raims.EnumValues.webhook_event_type_code_boleto_issuance_failed()` | `"boleto.issuance_failed"` |
+| `Raims.EnumValues.webhook_event_type_code_boleto_overpayment_received()` | `"boleto.overpayment_received"` |
+| `Raims.EnumValues.webhook_event_type_code_boleto_partial_settlement_detected()` | `"boleto.partial_settlement_detected"` |
 | `Raims.EnumValues.webhook_event_type_code_charge_canceled()` | `"charge.canceled"` |
 | `Raims.EnumValues.webhook_event_type_code_charge_created()` | `"charge.created"` |
 | `Raims.EnumValues.webhook_event_type_code_charge_expired()` | `"charge.expired"` |
 | `Raims.EnumValues.webhook_event_type_code_charge_failed()` | `"charge.failed"` |
 | `Raims.EnumValues.webhook_event_type_code_charge_fully_refunded()` | `"charge.fully_refunded"` |
 | `Raims.EnumValues.webhook_event_type_code_charge_paid()` | `"charge.paid"` |
+| `Raims.EnumValues.webhook_event_type_code_charge_partially_refunded()` | `"charge.partially_refunded"` |
+| `Raims.EnumValues.webhook_event_type_code_charge_payment_instructions_available()` | `"charge.payment_instructions_available"` |
+| `Raims.EnumValues.webhook_event_type_code_charge_payment_instructions_failed()` | `"charge.payment_instructions_failed"` |
 | `Raims.EnumValues.webhook_event_type_code_charge_updated()` | `"charge.updated"` |
 | `Raims.EnumValues.webhook_event_type_code_customer_created()` | `"customer.created"` |
 | `Raims.EnumValues.webhook_event_type_code_customer_deleted()` | `"customer.deleted"` |
@@ -703,27 +983,50 @@ values receive names only when the contract publishes explicit labels.
 | `Raims.EnumValues.webhook_event_type_code_dispute_updated()` | `"dispute.updated"` |
 | `Raims.EnumValues.webhook_event_type_code_payment_link_created()` | `"payment_link.created"` |
 | `Raims.EnumValues.webhook_event_type_code_payment_link_updated()` | `"payment_link.updated"` |
-| `Raims.EnumValues.webhook_event_type_code_pix_available()` | `"pix.available"` |
-| `Raims.EnumValues.webhook_event_type_code_pix_issuance_failed()` | `"pix.issuance_failed"` |
 | `Raims.EnumValues.webhook_event_type_code_pix_refund_received()` | `"pix_refund.received"` |
 | `Raims.EnumValues.webhook_event_type_code_refund_accepted()` | `"refund.accepted"` |
 | `Raims.EnumValues.webhook_event_type_code_refund_completed()` | `"refund.completed"` |
 | `Raims.EnumValues.webhook_event_type_code_refund_failed()` | `"refund.failed"` |
+| `Raims.EnumValues.webhook_event_type_code_refund_reconciliation_required()` | `"refund.reconciliation_required"` |
 | `Raims.EnumValues.webhook_event_type_code_refund_requested()` | `"refund.requested"` |
 | `Raims.EnumValues.webhook_event_type_code_statement_created()` | `"statement.created"` |
 | `Raims.EnumValues.webhook_event_type_code_ted_received()` | `"ted.received"` |
 | `Raims.EnumValues.webhook_event_type_code_withdrawal_accepted()` | `"withdrawal.accepted"` |
+| `Raims.EnumValues.webhook_event_type_code_withdrawal_automatic_settings_changed()` | `"withdrawal.automatic_settings_changed"` |
 | `Raims.EnumValues.webhook_event_type_code_withdrawal_completed()` | `"withdrawal.completed"` |
+| `Raims.EnumValues.webhook_event_type_code_withdrawal_destination_changed()` | `"withdrawal.destination_changed"` |
 | `Raims.EnumValues.webhook_event_type_code_withdrawal_failed()` | `"withdrawal.failed"` |
 | `Raims.EnumValues.webhook_event_type_code_withdrawal_requested()` | `"withdrawal.requested"` |
 | `Raims.EnumValues.webhook_health_status_disabled()` | `"disabled"` |
 | `Raims.EnumValues.webhook_health_status_failing()` | `"failing"` |
 | `Raims.EnumValues.webhook_health_status_healthy()` | `"healthy"` |
 | `Raims.EnumValues.webhook_health_status_unknown()` | `"unknown"` |
+| `Raims.EnumValues.webhook_test_webhook_event_environment_production()` | `"production"` |
+| `Raims.EnumValues.webhook_test_webhook_event_environment_sandbox()` | `"sandbox"` |
+| `Raims.EnumValues.withdrawal_accepted_webhook_event_data_payment_method_boleto()` | `"boleto"` |
+| `Raims.EnumValues.withdrawal_accepted_webhook_event_data_payment_method_credit_card()` | `"credit_card"` |
+| `Raims.EnumValues.withdrawal_accepted_webhook_event_data_payment_method_debit()` | `"debit"` |
+| `Raims.EnumValues.withdrawal_accepted_webhook_event_data_payment_method_pix()` | `"pix"` |
+| `Raims.EnumValues.withdrawal_automatic_settings_changed_webhook_event_data_payment_method_boleto()` | `"boleto"` |
+| `Raims.EnumValues.withdrawal_automatic_settings_changed_webhook_event_data_payment_method_credit_card()` | `"credit_card"` |
+| `Raims.EnumValues.withdrawal_automatic_settings_changed_webhook_event_data_payment_method_debit()` | `"debit"` |
+| `Raims.EnumValues.withdrawal_automatic_settings_changed_webhook_event_data_payment_method_pix()` | `"pix"` |
+| `Raims.EnumValues.withdrawal_completed_webhook_event_data_payment_method_boleto()` | `"boleto"` |
+| `Raims.EnumValues.withdrawal_completed_webhook_event_data_payment_method_credit_card()` | `"credit_card"` |
+| `Raims.EnumValues.withdrawal_completed_webhook_event_data_payment_method_debit()` | `"debit"` |
+| `Raims.EnumValues.withdrawal_completed_webhook_event_data_payment_method_pix()` | `"pix"` |
+| `Raims.EnumValues.withdrawal_destination_changed_webhook_event_data_payment_method_boleto()` | `"boleto"` |
+| `Raims.EnumValues.withdrawal_destination_changed_webhook_event_data_payment_method_credit_card()` | `"credit_card"` |
+| `Raims.EnumValues.withdrawal_destination_changed_webhook_event_data_payment_method_debit()` | `"debit"` |
+| `Raims.EnumValues.withdrawal_destination_changed_webhook_event_data_payment_method_pix()` | `"pix"` |
 | `Raims.EnumValues.withdrawal_destination_key_type_cnpj()` | `"CNPJ"` |
 | `Raims.EnumValues.withdrawal_destination_key_type_email()` | `"EMAIL"` |
 | `Raims.EnumValues.withdrawal_destination_key_type_evp()` | `"EVP"` |
 | `Raims.EnumValues.withdrawal_destination_key_type_phone()` | `"PHONE"` |
+| `Raims.EnumValues.withdrawal_failed_webhook_event_data_payment_method_boleto()` | `"boleto"` |
+| `Raims.EnumValues.withdrawal_failed_webhook_event_data_payment_method_credit_card()` | `"credit_card"` |
+| `Raims.EnumValues.withdrawal_failed_webhook_event_data_payment_method_debit()` | `"debit"` |
+| `Raims.EnumValues.withdrawal_failed_webhook_event_data_payment_method_pix()` | `"pix"` |
 | `Raims.EnumValues.withdrawal_failure_reason_code_above_maximum_withdrawal()` | `"ABOVE_MAXIMUM_WITHDRAWAL"` |
 | `Raims.EnumValues.withdrawal_failure_reason_code_bank_account_unavailable()` | `"BANK_ACCOUNT_UNAVAILABLE"` |
 | `Raims.EnumValues.withdrawal_failure_reason_code_bank_processing_failure()` | `"BANK_PROCESSING_FAILURE"` |
@@ -744,6 +1047,10 @@ values receive names only when the contract publishes explicit labels.
 | `Raims.EnumValues.withdrawal_pix_destination_key_type_email()` | `"EMAIL"` |
 | `Raims.EnumValues.withdrawal_pix_destination_key_type_evp()` | `"EVP"` |
 | `Raims.EnumValues.withdrawal_pix_destination_key_type_phone()` | `"PHONE"` |
+| `Raims.EnumValues.withdrawal_requested_webhook_event_data_payment_method_boleto()` | `"boleto"` |
+| `Raims.EnumValues.withdrawal_requested_webhook_event_data_payment_method_credit_card()` | `"credit_card"` |
+| `Raims.EnumValues.withdrawal_requested_webhook_event_data_payment_method_debit()` | `"debit"` |
+| `Raims.EnumValues.withdrawal_requested_webhook_event_data_payment_method_pix()` | `"pix"` |
 | `Raims.EnumValues.withdrawal_status_canceled()` | `"CANCELED"` |
 | `Raims.EnumValues.withdrawal_status_completed()` | `"COMPLETED"` |
 | `Raims.EnumValues.withdrawal_status_failed()` | `"FAILED"` |

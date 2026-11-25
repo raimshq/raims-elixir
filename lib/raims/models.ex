@@ -182,6 +182,9 @@ defmodule Raims.Models.Charge do
 
   @spec metadata(t()) :: map()
   def metadata(model), do: model["metadata"]
+
+  @spec boleto_settlement(t()) :: Raims.Models.ChargeBoletoSettlement.t() | nil
+  def boleto_settlement(model), do: model["boleto_settlement"]
 end
 
 defmodule Raims.Models.ChargeBoletoCompensation do
@@ -213,6 +216,20 @@ defmodule Raims.Models.ChargeBoletoPaymentInformation do
 
   @spec due_date(t()) :: integer()
   def due_date(model), do: model["due_date"]
+end
+
+defmodule Raims.Models.ChargeBoletoSettlement do
+  @moduledoc "Read-only ChargeBoletoSettlement response. Access JSON fields with model[\"field\"]."
+  use Raims.Model
+
+  @spec observed_amount_cents(t()) :: integer() | nil
+  def observed_amount_cents(model), do: model["observed_amount_cents"]
+
+  @spec confirmed_total_cents(t()) :: integer() | nil
+  def confirmed_total_cents(model), do: model["confirmed_total_cents"]
+
+  @spec overpayment_cents(t()) :: integer() | nil
+  def overpayment_cents(model), do: model["overpayment_cents"]
 end
 
 defmodule Raims.Models.ChargeCreated do
@@ -1280,6 +1297,138 @@ defmodule Raims.Models.Webhook do
   def paused_at(model), do: model["paused_at"]
 end
 
+defmodule Raims.Models.WebhookAdvanceAccepted do
+  @moduledoc "Read-only WebhookAdvanceAccepted response. Access JSON fields with model[\"field\"]."
+  use Raims.Model
+
+  @spec delivery_id(t()) :: String.t()
+  def delivery_id(model), do: model["delivery_id"]
+end
+
+defmodule Raims.Models.WebhookAttempt do
+  @moduledoc "Read-only WebhookAttempt response. Access JSON fields with model[\"field\"]."
+  use Raims.Model
+
+  @spec id(t()) :: String.t()
+  def id(model), do: model["id"]
+
+  @spec delivery_id(t()) :: String.t()
+  def delivery_id(model), do: model["delivery_id"]
+
+  @spec attempt_number(t()) :: integer()
+  def attempt_number(model), do: model["attempt_number"]
+
+  @spec created_at(t()) :: integer()
+  def created_at(model), do: model["created_at"]
+
+  @spec status_code(t()) :: integer() | nil
+  def status_code(model), do: model["status_code"]
+
+  @spec duration_ms(t()) :: number()
+  def duration_ms(model), do: model["duration_ms"]
+
+  @spec destination_ip(t()) :: String.t() | nil
+  def destination_ip(model), do: model["destination_ip"]
+
+  @spec error_code(t()) :: String.t() | nil
+  def error_code(model), do: model["error_code"]
+
+  @spec endpoint_url(t()) :: String.t() | nil
+  def endpoint_url(model), do: model["endpoint_url"]
+
+  @spec request_available(t()) :: boolean()
+  def request_available(model), do: model["request_available"]
+
+  @spec response_body_available(t()) :: boolean()
+  def response_body_available(model), do: model["response_body_available"]
+
+  @spec response_body_truncated(t()) :: boolean()
+  def response_body_truncated(model), do: model["response_body_truncated"]
+end
+
+defmodule Raims.Models.WebhookAttemptDetail do
+  @moduledoc "Read-only WebhookAttemptDetail response. Access JSON fields with model[\"field\"]."
+  use Raims.Model
+
+  @spec request_body(t()) :: String.t() | nil
+  def request_body(model), do: model["request_body"]
+
+  @spec response_body(t()) :: String.t() | nil
+  def response_body(model), do: model["response_body"]
+
+  @spec id(t()) :: String.t()
+  def id(model), do: model["id"]
+
+  @spec delivery_id(t()) :: String.t()
+  def delivery_id(model), do: model["delivery_id"]
+
+  @spec attempt_number(t()) :: integer()
+  def attempt_number(model), do: model["attempt_number"]
+
+  @spec created_at(t()) :: integer()
+  def created_at(model), do: model["created_at"]
+
+  @spec status_code(t()) :: integer() | nil
+  def status_code(model), do: model["status_code"]
+
+  @spec duration_ms(t()) :: number()
+  def duration_ms(model), do: model["duration_ms"]
+
+  @spec destination_ip(t()) :: String.t() | nil
+  def destination_ip(model), do: model["destination_ip"]
+
+  @spec error_code(t()) :: String.t() | nil
+  def error_code(model), do: model["error_code"]
+
+  @spec endpoint_url(t()) :: String.t() | nil
+  def endpoint_url(model), do: model["endpoint_url"]
+
+  @spec request_available(t()) :: boolean()
+  def request_available(model), do: model["request_available"]
+
+  @spec response_body_available(t()) :: boolean()
+  def response_body_available(model), do: model["response_body_available"]
+
+  @spec response_body_truncated(t()) :: boolean()
+  def response_body_truncated(model), do: model["response_body_truncated"]
+end
+
+defmodule Raims.Models.WebhookAttemptListResponse do
+  @moduledoc "Read-only WebhookAttemptListResponse response. Access JSON fields with model[\"field\"]."
+  use Raims.Model
+
+  @spec list(t()) :: [Raims.Models.WebhookAttempt.t()]
+  def list(model), do: model["list"]
+
+  @spec page(t()) :: Raims.Models.WebhookDeliveryPage.t()
+  def page(model), do: model["page"]
+end
+
+defmodule Raims.Models.WebhookBulkResendAccepted do
+  @moduledoc "Read-only WebhookBulkResendAccepted response. Access JSON fields with model[\"field\"]."
+  use Raims.Model
+
+  @spec results(t()) :: [Raims.Models.WebhookBulkResendItem.t()]
+  def results(model), do: model["results"]
+end
+
+defmodule Raims.Models.WebhookBulkResendItem do
+  @moduledoc "Read-only WebhookBulkResendItem response. Access JSON fields with model[\"field\"]."
+  use Raims.Model
+
+  @spec source_delivery_id(t()) :: String.t()
+  def source_delivery_id(model), do: model["source_delivery_id"]
+
+  @spec delivery_id(t()) :: String.t() | nil
+  def delivery_id(model), do: model["delivery_id"]
+
+  @spec event_id(t()) :: String.t() | nil
+  def event_id(model), do: model["event_id"]
+
+  @spec error(t()) :: Raims.Models.Error.t() | nil
+  def error(model), do: model["error"]
+end
+
 defmodule Raims.Models.WebhookCreated do
   @moduledoc "Read-only WebhookCreated response. Access JSON fields with model[\"field\"]."
   use Raims.Model
@@ -1322,6 +1471,137 @@ defmodule Raims.Models.WebhookCreated do
 
   @spec paused_at(t()) :: integer() | nil
   def paused_at(model), do: model["paused_at"]
+end
+
+defmodule Raims.Models.WebhookDelivery do
+  @moduledoc "Read-only WebhookDelivery response. Access JSON fields with model[\"field\"]."
+  use Raims.Model
+
+  @spec id(t()) :: String.t()
+  def id(model), do: model["id"]
+
+  @spec webhook_id(t()) :: String.t() | nil
+  def webhook_id(model), do: model["webhook_id"]
+
+  @spec event_id(t()) :: String.t()
+  def event_id(model), do: model["event_id"]
+
+  @spec event_type(t()) :: String.t()
+  def event_type(model), do: model["event_type"]
+
+  @spec status(t()) :: String.t()
+  def status(model), do: model["status"]
+
+  @spec created_at(t()) :: integer()
+  def created_at(model), do: model["created_at"]
+
+  @spec event_created_at(t()) :: integer()
+  def event_created_at(model), do: model["event_created_at"]
+
+  @spec deadline_at(t()) :: integer()
+  def deadline_at(model), do: model["deadline_at"]
+
+  @spec next_attempt_at(t()) :: integer() | nil
+  def next_attempt_at(model), do: model["next_attempt_at"]
+
+  @spec updated_at(t()) :: integer()
+  def updated_at(model), do: model["updated_at"]
+end
+
+defmodule Raims.Models.WebhookDeliveryListResponse do
+  @moduledoc "Read-only WebhookDeliveryListResponse response. Access JSON fields with model[\"field\"]."
+  use Raims.Model
+
+  @spec list(t()) :: [Raims.Models.WebhookDelivery.t()]
+  def list(model), do: model["list"]
+
+  @spec page(t()) :: Raims.Models.WebhookDeliveryPage.t()
+  def page(model), do: model["page"]
+end
+
+defmodule Raims.Models.WebhookDeliveryPage do
+  @moduledoc "Read-only WebhookDeliveryPage response. Access JSON fields with model[\"field\"]."
+  use Raims.Model
+
+  @spec page_size(t()) :: integer()
+  def page_size(model), do: model["page_size"]
+
+  @spec has_next(t()) :: boolean()
+  def has_next(model), do: model["has_next"]
+
+  @spec has_previous(t()) :: boolean()
+  def has_previous(model), do: model["has_previous"]
+
+  @spec next_after(t()) :: String.t() | nil
+  def next_after(model), do: model["next_after"]
+
+  @spec previous_before(t()) :: String.t() | nil
+  def previous_before(model), do: model["previous_before"]
+end
+
+defmodule Raims.Models.WebhookDeliveryResendAccepted do
+  @moduledoc "Read-only WebhookDeliveryResendAccepted response. Access JSON fields with model[\"field\"]."
+  use Raims.Model
+
+  @spec delivery_id(t()) :: String.t()
+  def delivery_id(model), do: model["delivery_id"]
+
+  @spec event_id(t()) :: String.t()
+  def event_id(model), do: model["event_id"]
+end
+
+defmodule Raims.Models.WebhookEvent do
+  @moduledoc "Read-only WebhookEvent response. Access JSON fields with model[\"field\"]."
+  use Raims.Model
+
+  @spec id(t()) :: String.t()
+  def id(model), do: model["id"]
+
+  @spec event_type(t()) :: String.t()
+  def event_type(model), do: model["event_type"]
+
+  @spec created_at(t()) :: integer()
+  def created_at(model), do: model["created_at"]
+
+  @spec resource_type(t()) :: String.t()
+  def resource_type(model), do: model["resource_type"]
+
+  @spec resource_id(t()) :: String.t()
+  def resource_id(model), do: model["resource_id"]
+end
+
+defmodule Raims.Models.WebhookEventDetail do
+  @moduledoc "Read-only WebhookEventDetail response. Access JSON fields with model[\"field\"]."
+  use Raims.Model
+
+  @spec payload(t()) :: String.t()
+  def payload(model), do: model["payload"]
+
+  @spec id(t()) :: String.t()
+  def id(model), do: model["id"]
+
+  @spec event_type(t()) :: String.t()
+  def event_type(model), do: model["event_type"]
+
+  @spec created_at(t()) :: integer()
+  def created_at(model), do: model["created_at"]
+
+  @spec resource_type(t()) :: String.t()
+  def resource_type(model), do: model["resource_type"]
+
+  @spec resource_id(t()) :: String.t()
+  def resource_id(model), do: model["resource_id"]
+end
+
+defmodule Raims.Models.WebhookEventListResponse do
+  @moduledoc "Read-only WebhookEventListResponse response. Access JSON fields with model[\"field\"]."
+  use Raims.Model
+
+  @spec list(t()) :: [Raims.Models.WebhookEvent.t()]
+  def list(model), do: model["list"]
+
+  @spec page(t()) :: Raims.Models.WebhookDeliveryPage.t()
+  def page(model), do: model["page"]
 end
 
 defmodule Raims.Models.WebhookEventType do
