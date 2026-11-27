@@ -12,7 +12,7 @@ concurrency:
 env:
   PYTHONDONTWRITEBYTECODE: '1'
   PYTHONOPTIMIZE: '0'
-  RAIMS_ELIXIR_TOOLKIT_REF: b64e347efa89fc8f383b4532c0bdc5bc35d7c774
+  RAIMS_ELIXIR_TOOLKIT_REF: d1257827c06210275b9edb955fb1611fed41b4b5
 jobs:
   validateRelease:
     permissions:
@@ -92,16 +92,12 @@ jobs:
         path: .tmp/raims-elixir-sdk/hex-upload
         merge-multiple: true
         digest-mismatch: error
-    - name: Verify release and approved bytes before using publishing credentials
+    - name: Verify permanent Hex publisher credential
       id: verify
       env:
         GITHUB_TOKEN: ${{ github.token }}
-      run: python Raims-Elixir/scripts/release.py verify --source Raims-Elixir --artifact .tmp/raims-elixir-sdk/hex-upload
-    - name: Verify permanent Hex publisher credential
-      env:
-        GITHUB_TOKEN: ${{ github.token }}
         HEX_API_KEY: ${{ secrets.HEX_API_KEY }}
-      run: python Raims-Elixir/scripts/release.py credential --source Raims-Elixir --artifact .tmp/raims-elixir-sdk/hex-upload
+      run: python Raims-Elixir/scripts/release.py verify-publisher --source Raims-Elixir --artifact .tmp/raims-elixir-sdk/hex-upload
     - name: Publish the exact approved Hex package
       if: steps.verify.outputs.publishRequired == 'true'
       env:

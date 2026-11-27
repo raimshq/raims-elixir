@@ -225,11 +225,12 @@ def release_files(value, files, create_missing=False):
             require(public_download(assets[name]['browser_download_url']) == raw, 'An existing release asset differs from approved CI bytes.')
     missing = set(complete) - set(assets)
     require(not missing or create_missing, 'The approved Hex package assets are missing from the release.')
+    if not missing:
+        return
     for name in sorted(missing):
         upload_release_asset(value['releaseId'], name, complete[name])
-    if missing:
-        rows = github('releases/' + str(value['releaseId'])).get('assets', [])
-        assets = {asset['name']: asset for asset in rows}
+    rows = github('releases/' + str(value['releaseId'])).get('assets', [])
+    assets = {asset['name']: asset for asset in rows}
     require(len(assets) == len(rows) and set(assets) == expected, 'The release asset inventory differs.')
     for name, raw in complete.items():
         require(public_download(assets[name]['browser_download_url']) == raw, 'A public release asset differs.')
@@ -296,15 +297,16 @@ def prior_stage(authorization, value, raw):
     return staged_response(response, value, raw)
 
 
-def permanent_api_key():
-    token = os.environ.get('HEX_API_KEY', '')
+def permanent_api_key(token=None):
+    if token is None:
+        token = os.environ.get('HEX_API_KEY', '')
     require(16 <= len(token) <= 8192 and token == token.strip() and '\r' not in token and '\n' not in token,
             'The configured permanent Hex API key is missing or invalid.')
     return token
 
 
-def verify_credential():
-    token = permanent_api_key()
+def verify_credential(token=None):
+    token = permanent_api_key(token)
     headers = {'Authorization': token, 'Accept': 'application/json', 'User-Agent': 'Raims-Elixir-Release'}
     def read(endpoint):
         try:
@@ -382,13 +384,15 @@ def confirm(version, files, wait_seconds=600):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('command', choices=('prepare', 'verify', 'credential', 'publish', 'confirm'))
+    parser.add_argument('command', choices=('prepare', 'verify', 'verify-publisher', 'credential', 'publish', 'confirm'))
     parser.add_argument('--source', type=Path, required=True)
     parser.add_argument('--artifact', type=Path, required=True)
     args = parser.parse_args()
     source, artifact = args.source.resolve(), args.artifact.resolve()
     workspace = Path(os.environ.get('GITHUB_WORKSPACE', '.')).resolve()
     require(workspace / '.tmp' in artifact.parents, 'Release artifacts must stay in workspace .tmp.')
+    # Keep the publishing credential out of provenance subprocesses.
+    publisher_key = os.environ.pop('HEX_API_KEY', '') if args.command == 'verify-publisher' else None
     value = context(source)
     proven = validation(value['sourceRevision'])
     files, _identifier = artifact_files(value, proven)
@@ -400,8 +404,10 @@ def main():
             (artifact / name if name == 'release-manifest.json' else artifact / 'dist' / name).write_bytes(raw)
     else:
         validate_local(artifact, files)
-    if args.command == 'verify':
+    if args.command in ('verify', 'verify-publisher'):
         required = not indexed(value['version'], files['raims.tar'])
+        if args.command == 'verify-publisher':
+            verify_credential(publisher_key)
         if os.environ.get('GITHUB_OUTPUT'):
             with Path(os.environ['GITHUB_OUTPUT']).open('a', encoding='utf-8') as output:
                 output.write('publishRequired=' + ('true' if required else 'false') + '\n')
